@@ -2,9 +2,9 @@
 class imitation
 {
     private $servername = "localhost";
-    private $username = "vrsecc8y_root";
-    private $password = "vrsecc8y_root";
-    private $dbname = "vrsecc8y_imitation";
+    private $username = "root";
+    private $password = "";
+    private $dbname = "imitation";
 
     public function __construct() {
         $this->PDO = new PDO("mysql:host=$this->servername;dbname=$this->dbname", "$this->username", "$this->password");

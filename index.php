@@ -4,13 +4,6 @@ include_once("config.php");
 $imitation = new imitation();
 
 if(isset($_POST['type'])) {
-    if(!isset($_SESSION['user_id']) && !isset($_SESSION['email'])) {
-        echo 'login';
-        $_SESSION['page'] = 'index.php';
-        exit;
-    }
-
-    $user_id = $_SESSION['user_id'];
     if($_POST['type'] == 'removeItem') {
         $proId = $_POST['proId'];
         $proCon = array("user_id" => $user_id, "pro_id" => $proId);
@@ -172,27 +165,18 @@ if(isset($_POST['type'])) {
                                     <ul>
                                         <li>
                                             <div class="cart-plus-minus">
-                                                <input type="text" value="1" name="qtybutton" class="cart-plus-minus-box" id="qty">
+                                                <input type="text" value="1" inputmode="numeric" min="1" name="qtybutton" class="cart-plus-minus-box" id="qty">
                                             </div>
                                         </li>
                                         <li>
-                                            <a href="#" class="theme-btn-1 btn btn-effect-1" title="Add to Cart" data-bs-toggle="modal" data-bs-target="#add_to_cart_modal">
+                                            <a class="theme-btn-1 btn btn-effect-1" title="Add to Cart">
                                                 <i class="fas fa-shopping-cart"></i>
                                                 <span class="addProduct" data-proid="'. $result[0]['id'] .'">ADD TO CART</span>
                                             </a>
                                         </li>
                                     </ul>
                                 </div>
-                                <div class="ltn__product-details-menu-3">
-                                    <ul>
-                                        <li>
-                                            <a href="#" class="" title="Wishlist" data-bs-toggle="modal" data-bs-target="#liton_wishlist_modal">
-                                                <i class="far fa-heart"></i>
-                                                <span>Add to Wishlist</span>
-                                            </a>
-                                        </li>
-                                    </ul>
-                                </div>
+                                
                                 <hr>
                             </div>
                         </div>
@@ -252,7 +236,7 @@ if(isset($_POST['type'])) {
     <!-- IMAGE SLIDER AREA START (img-slider-3) -->
     <div class="ltn__img-slider-area">
         <div class="container-fluid">
-            <div class="row ltn__image-slider-4-active slick-arrow-1 slick-arrow-1-inner ltn__no-gutter-all">
+            <div class="row ltn__image-slider-4-active slick-arrow-1 slick-arrow-1-inner ltn__no-gutter-all" data-slick='{"autoplay": true, "autoplaySpeed": 5000, "pause": 5000}'>
                 <?php
                     $orderBy = "pro_order ASC";
                     $slider = $imitation->get("slider", "*", NULL, NULL, $orderBy);
@@ -2428,6 +2412,9 @@ if(isset($_POST['type'])) {
     <!-- <script src="https://cdnjs.cloudflare.com/ajax/libs/jquery/3.7.1/jquery.min.js" integrity="sha512-v2CJ7UaYy4JwqLDIrZUI/4hqeoQieOmAZNXBeQyjo21dadnwR+8ZaIJVT8EE2iyI61OV8e6M8PP2/4hpQINQ/g==" crossorigin="anonymous" referrerpolicy="no-referrer"></script> -->
 </body>
 <script>
+    $(document).ready(function(){
+        $('.ltn__image-slider-4-active').slick();
+    });
     var user_id = "<?php echo isset($_SESSION['user_id']) ? $_SESSION['user_id'] : ''; ?>";
     
     $('.view').click(function() {
@@ -2485,26 +2472,31 @@ if(isset($_POST['type'])) {
     });
 
     $(document).on('click', '.addProduct', function() {
-        var proid = $(this).data("proid");
-        var qty = $('#qty').val();
-        $.ajax({
-            url: 'index.php',
-            method: 'POST',
-            dataType: 'json',
-            data: {
-                type: "addCart",
-                proId: proid,
-                qty: qty
-            },
-            success: function(response){
-                if(response.status == 'added') {
-                    $('#cart').text('Already added this product.');
-                } else {
-                    $('.totalPro').text(response.totalProduct);
-                    $('#cart').html('<i class="fa fa-check-circle"></i>  Successfully added to your Cart');
+        if(user_id == '') {
+            window.location.href = 'login.php';
+        } else {
+            var proid = $(this).data("proid");
+            var qty = $('#qty').val();
+            $.ajax({
+                url: 'index.php',
+                method: 'POST',
+                dataType: 'json',
+                data: {
+                    type: "addCart",
+                    proId: proid,
+                    qty: qty
+                },
+                success: function(response){
+                    $('#add_to_cart_modal').modal('show');
+                    if(response.status == 'added') {
+                        $('#cart').text('Already added this product.');
+                    } else {
+                        $('.totalPro').text(response.totalProduct);
+                        $('#cart').html('<i class="fa fa-check-circle"></i>  Successfully added to your Cart');
+                    }
                 }
-            }
-        });
+            });
+        }
     });
 
     $(document).on('click', '#showCart', function() {
