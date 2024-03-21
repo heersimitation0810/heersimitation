@@ -336,58 +336,6 @@ if(isset($_POST['type'])) {
                         </div>
                     </div>
                 </div>
-                <div class="col-lg-3 col-md-4 col-sm-6 col-6">
-                    <div class="ltn__category-item ltn__category-item-3 text-center">
-                        <div class="ltn__category-item-img">
-                            <a href="shop.html">
-                                <img src="img/icons/icon-img/jewelry.png" alt="Image" style="height:50px; width:50px;">
-                            </a>
-                        </div>
-                        <div class="ltn__category-item-name">
-                            <h5><a href="shop.html">Chains</a></h5>
-                            <h6>(25 item)</h6>
-                        </div>
-                    </div>
-                </div>
-                <div class="col-lg-3 col-md-4 col-sm-6 col-6">
-                    <div class="ltn__category-item ltn__category-item-3 text-center">
-                        <div class="ltn__category-item-img">
-                            <a href="shop.html">
-                                <img src="img/icons/icon-img/category-3.png" alt="Image">
-                            </a>
-                        </div>
-                        <div class="ltn__category-item-name">
-                            <h5><a href="shop.html">Others</a></h5>
-                            <h6>(85 item)</h6>
-                        </div>
-                    </div>
-                </div>
-                <div class="col-lg-3 col-md-4 col-sm-6 col-6">
-                    <div class="ltn__category-item ltn__category-item-3 text-center">
-                        <div class="ltn__category-item-img">
-                            <a href="shop.html">
-                                <img src="img/icons/icon-img/category-2.png" alt="Image">
-                            </a>
-                        </div>
-                        <div class="ltn__category-item-name">
-                            <h5><a href="shop.html">Vegetables</a></h5>
-                            <h6>(78 item)</h6>
-                        </div>
-                    </div>
-                </div>
-                <div class="col-lg-3 col-md-4 col-sm-6 col-6">
-                    <div class="ltn__category-item ltn__category-item-3 text-center">
-                        <div class="ltn__category-item-img">
-                            <a href="shop.html">
-                                <img src="img/icons/icon-img/category-4.png" alt="Image">
-                            </a>
-                        </div>
-                        <div class="ltn__category-item-name">
-                            <h5><a href="shop.html">Meat</a></h5>
-                            <h6>(15 item)</h6>
-                        </div>
-                    </div>
-                </div>
             </div>
         </div>
     </div>
@@ -518,7 +466,7 @@ if(isset($_POST['type'])) {
                                                                     </a>
                                                                 </li>
                                                                 <li>
-                                                                    <a title="Wishlist" data-bs-toggle="modal" data-bs-target="#liton_wishlist_modal" class="wishlist" data-proid="<?php echo $val['id']; ?>">
+                                                                    <a title="Wishlist" class="wishlist" data-proid="<?php echo $val['id']; ?>">
                                                                         <i class="far fa-heart"></i></a>
                                                                 </li>
                                                             </ul>
@@ -2480,6 +2428,8 @@ if(isset($_POST['type'])) {
     <!-- <script src="https://cdnjs.cloudflare.com/ajax/libs/jquery/3.7.1/jquery.min.js" integrity="sha512-v2CJ7UaYy4JwqLDIrZUI/4hqeoQieOmAZNXBeQyjo21dadnwR+8ZaIJVT8EE2iyI61OV8e6M8PP2/4hpQINQ/g==" crossorigin="anonymous" referrerpolicy="no-referrer"></script> -->
 </body>
 <script>
+    var user_id = "<?php echo isset($_SESSION['user_id']) ? $_SESSION['user_id'] : ''; ?>";
+    
     $('.view').click(function() {
         var proid = $(this).data("proid");
         $.ajax({
@@ -2511,26 +2461,27 @@ if(isset($_POST['type'])) {
     });
 
     $(document).on('click', '.wishlist', function() {
-        var proid = $(this).data("proid");
-        $.ajax({
-            url: 'index.php',
-            method: 'POST',
-            data: {
-                type: "addWishlist",
-                proId: proid
-            },
-            success: function(response){
-                if(response == 'login') {
-                    window.location.href = 'login.php';
-                } else {
+        if(user_id == '') {
+            window.location.href = 'login.php';
+        } else {
+            var proid = $(this).data("proid");
+            $.ajax({
+                url: 'index.php',
+                method: 'POST',
+                data: {
+                    type: "addWishlist",
+                    proId: proid
+                },
+                success: function(response){
+                    $('#liton_wishlist_modal').modal('show');
                     if(response == 'added') {
                         $('#wishlist').text('Already added this product.');
                     } else {
                         $('#wishlist').html('<i class="fa fa-check-circle"></i>  Successfully added to your Wishlist');
                     }
                 }
-            }
-        });
+            });
+        }
     });
 
     $(document).on('click', '.addProduct', function() {

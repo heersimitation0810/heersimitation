@@ -53,7 +53,7 @@ if(isset($_POST['submit'])) {
             }
         }
     } else {
-        $msg = '<div class="alert alert-danger">Please Enter Correct Details</div>';
+        $msg = '<div class="alert alert-danger">Please enter correct Email/Password.</div>';
     }
 }
 ?>
