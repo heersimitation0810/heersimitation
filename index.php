@@ -4,6 +4,7 @@ include_once("config.php");
 $imitation = new imitation();
 
 if(isset($_POST['type'])) {
+    $user_id = isset($_SESSION['user_id']) ? $_SESSION['user_id'] : '';
     if($_POST['type'] == 'removeItem') {
         $proId = $_POST['proId'];
         $proCon = array("user_id" => $user_id, "pro_id" => $proId);
@@ -271,52 +272,48 @@ if(isset($_POST['type'])) {
                 <div class="col-lg-3 col-md-4 col-sm-6 col-6">
                     <div class="ltn__category-item ltn__category-item-3 text-center">
                         <div class="ltn__category-item-img">
-                            <a href="shop.html">
+                            <a href="shop.php?catid=1">
                                 <img src="img/icons/icon-img/earrings.png" alt="Image" style="height:50px; width:50px;">
                             </a>
                         </div>
                         <div class="ltn__category-item-name">
-                            <h5><a href="shop.html">Earring</a></h5>
-                            <h6>(235 item)</h6>
+                            <h5><a href="shop.php?catid=1">Earring</a></h5>
                         </div>
                     </div>
                 </div>
                 <div class="col-lg-3 col-md-4 col-sm-6 col-6">
                     <div class="ltn__category-item ltn__category-item-3 text-center">
                         <div class="ltn__category-item-img">
-                            <a href="shop.html">
+                            <a href="shop.php?catid=1">
                                 <img src="img/icons/icon-img/bracelet.png" alt="Image" style="height:50px; width:50px;">
                             </a>
                         </div>
                         <div class="ltn__category-item-name">
-                            <h5><a href="shop.html">Bracelets</a></h5>
-                            <h6>(78 item)</h6>
+                            <h5><a href="shop.php?catid=1">Bracelets</a></h5>
                         </div>
                     </div>
                 </div>
                 <div class="col-lg-3 col-md-4 col-sm-6 col-6">
                     <div class="ltn__category-item ltn__category-item-3 text-center">
                         <div class="ltn__category-item-img">
-                            <a href="shop.html">
+                            <a href="shop.php?catid=1">
                                 <img src="img/icons/icon-img/rings.png" alt="Image" style="height:50px; width:50px;">
                             </a>
                         </div>
                         <div class="ltn__category-item-name">
-                            <h5><a href="shop.html">Rings</a></h5>
-                            <h6>(45 item)</h6>
+                            <h5><a href="shop.php?catid=1">Rings</a></h5>
                         </div>
                     </div>
                 </div>
                 <div class="col-lg-3 col-md-4 col-sm-6 col-6">
                     <div class="ltn__category-item ltn__category-item-3 text-center">
                         <div class="ltn__category-item-img">
-                            <a href="shop.html">
+                            <a href="shop.php?catid=1">
                                 <img src="img/icons/icon-img/necklace.png" alt="Image" style="height:50px; width:50px;">
                             </a>
                         </div>
                         <div class="ltn__category-item-name">
-                            <h5><a href="shop.html">Necklace</a></h5>
-                            <h6>(15 item)</h6>
+                            <h5><a href="shop.php?catid=1">Necklace</a></h5>
                         </div>
                     </div>
                 </div>
@@ -466,9 +463,9 @@ if(isset($_POST['type'])) {
                                                     </div>
                                                 </div>
                                             </div>
-                                    <?php 
-                                        }
-                                    ?>
+                                        <?php 
+                                            }
+                                        ?>
                                 </div>
                             </div>
                         </div>
@@ -982,7 +979,7 @@ if(isset($_POST['type'])) {
                                         </div>
                                         <div class="ltn__product-item ltn__product-item-3 text-center">
                                             <div class="product-img">
-                                                <a href="product-details.html"><img src="img/product/11.png" alt="#"></a>
+                                                <a><img src="img/product/11.png" alt="#"></a>
                                                 <div class="product-badge">
                                                     <ul>
                                                         <li class="sale-badge">-19%</li>
@@ -2261,7 +2258,7 @@ if(isset($_POST['type'])) {
                         <div class="col-lg-3 col-md-4 col-sm-6 col-6">
                             <div class="ltn__product-item ltn__product-item-3 text-left">
                                 <div class="product-img">
-                                    <a href="product-details.html" style="display: flex; justify-content: center;">
+                                    <a style="display: flex; justify-content: center;">
                                         <img src="img/product/<?php echo $val['primary_img']; ?>" alt="#" style="margin-top:10px; height:200px; width:200px; object-fit: cover;">
                                     </a>
                                     <div class="product-badge">
@@ -2272,17 +2269,12 @@ if(isset($_POST['type'])) {
                                     <div class="product-hover-action">
                                         <ul>
                                             <li>
-                                                <a href="#" title="Quick View" data-bs-toggle="modal" data-bs-target="#quick_view_modal" class="view" data-proid="<?php echo $val['id']; ?>">
+                                                <a href="#" title="Quick View" class="view" data-proid="<?php echo $val['id']; ?>">
                                                     <i class="far fa-eye"></i>
                                                 </a>
                                             </li>
                                             <li>
-                                                <a href="#" title="Add to Cart" data-bs-toggle="modal" data-bs-target="#add_to_cart_modal">
-                                                    <i class="fas fa-shopping-cart"></i>
-                                                </a>
-                                            </li>
-                                            <li>
-                                                <a href="#" title="Wishlist" data-bs-toggle="modal" data-bs-target="#liton_wishlist_modal">
+                                                <a href="#" title="Wishlist" class="wishlist" data-proid="<?php echo $val['id']; ?>">
                                                     <i class="far fa-heart"></i></a>
                                             </li>
                                         </ul>
@@ -2412,9 +2404,6 @@ if(isset($_POST['type'])) {
     <!-- <script src="https://cdnjs.cloudflare.com/ajax/libs/jquery/3.7.1/jquery.min.js" integrity="sha512-v2CJ7UaYy4JwqLDIrZUI/4hqeoQieOmAZNXBeQyjo21dadnwR+8ZaIJVT8EE2iyI61OV8e6M8PP2/4hpQINQ/g==" crossorigin="anonymous" referrerpolicy="no-referrer"></script> -->
 </body>
 <script>
-    $(document).ready(function(){
-        $('.ltn__image-slider-4-active').slick();
-    });
     var user_id = "<?php echo isset($_SESSION['user_id']) ? $_SESSION['user_id'] : ''; ?>";
     
     $('.view').click(function() {
