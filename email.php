@@ -19,18 +19,16 @@ function smtp_mailer($to, $subject, $msg) {
 
         $mail->SetFrom("heersimitation@gmail.com", "Heers Imitation Jewelery House");
         $mail->Subject = $subject;
+        $mail->isHTML(true);
         $mail->Body = $msg;
         $mail->AddAddress($to);
-        
         $mail->AddEmbeddedImage('logo.png', 'logo');
-        
-        $mail->SMTPOptions=array('ssl'=>array(
-            'verify_peer'=>false,
-            'verify_peer_name'=>false,
-            'allow_self_signed'=>false
-        ));
 
-        $mail->send();
+        if($mail->send()) {
+            return true;
+        } else {
+            return false;
+        }
     } catch (Exception $e) {
         echo "Message could not be sent. Mailer Error: {$mail->ErrorInfo}";
     }

@@ -38,7 +38,7 @@ if (isset($_POST['submit'])) {
                     <br><br>
                     <img src='cid:logo' alt='Company Logo' style='height:80%; width:80%;'>";
 
-            if(smtp_mailer('mitulsoni1311@gmail.com', 'OTP Request', $html)) {
+            if(smtp_mailer($email, 'OTP Request', $html)) {
                 header("Location:otp.php");
             } else {
                 $msg =  '<div class="alert alert-danger">Something went wrong !!!</div>';
