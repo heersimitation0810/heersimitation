@@ -2,6 +2,7 @@
 
 session_start();
 include_once("config.php");
+include_once("email.php");
 $imitation = new imitation();
 $msg = "";
 
@@ -31,7 +32,7 @@ if(isset($_POST['submit'])) {
             $_SESSION['otp']  = $otp;
             $_SESSION['email'] = $result[0]['email'];
             $email = $result[0]['email'];
-            $name = $result[0]['firstname'] . ' ' . $result[0]['lastname'];
+            $name = $result[0]['first_name'] . ' ' . $result[0]['last_name'];
 
             $html = "Dear $name, <br><br>
                     Thank you for choosing Heers imitation jewellery house. To ensure the security of your account, we require you to verify your email address with the following One-Time Password (OTP):
