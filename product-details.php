@@ -76,7 +76,15 @@ if(isset($_POST['type'])) {
         if(count($checkPro) >= 1) {
             $array = array("qty" => $_POST['qty']);
             $updateResult = $imitation->update("tmp_cart", $array, $con);
-            echo 'added';
+            
+            $userCon = array('user_id' => $user_id);
+            $tmpResult = $imitation->get('tmp_cart', '*', NULL, $userCon);
+
+            $resultArry = [
+                'status' => 'success',
+                'totalProduct' => count($tmpResult)
+            ];
+            echo json_encode($resultArry);
             exit;
         } else {
             $array = array(
@@ -227,57 +235,14 @@ if(isset($_POST['type'])) {
                 <span class="ltn__utilize-menu-title">Cart</span>
                 <button class="ltn__utilize-close">×</button>
             </div>
-            <div class="mini-cart-product-area ltn__scrollbar">
-                <div class="mini-cart-item clearfix">
-                    <div class="mini-cart-img">
-                        <a href="#"><img src="img/product/1.png" alt="Image"></a>
-                        <span class="mini-cart-item-delete"><i class="icon-cancel"></i></span>
-                    </div>
-                    <div class="mini-cart-info">
-                        <h6><a href="#">Red Hot Tomato</a></h6>
-                        <span class="mini-cart-quantity">1 x $65.00</span>
-                    </div>
-                </div>
-                <div class="mini-cart-item clearfix">
-                    <div class="mini-cart-img">
-                        <a href="#"><img src="img/product/2.png" alt="Image"></a>
-                        <span class="mini-cart-item-delete"><i class="icon-cancel"></i></span>
-                    </div>
-                    <div class="mini-cart-info">
-                        <h6><a href="#">Vegetables Juices</a></h6>
-                        <span class="mini-cart-quantity">1 x $85.00</span>
-                    </div>
-                </div>
-                <div class="mini-cart-item clearfix">
-                    <div class="mini-cart-img">
-                        <a href="#"><img src="img/product/3.png" alt="Image"></a>
-                        <span class="mini-cart-item-delete"><i class="icon-cancel"></i></span>
-                    </div>
-                    <div class="mini-cart-info">
-                        <h6><a href="#">Orange Sliced Mix</a></h6>
-                        <span class="mini-cart-quantity">1 x $92.00</span>
-                    </div>
-                </div>
-                <div class="mini-cart-item clearfix">
-                    <div class="mini-cart-img">
-                        <a href="#"><img src="img/product/4.png" alt="Image"></a>
-                        <span class="mini-cart-item-delete"><i class="icon-cancel"></i></span>
-                    </div>
-                    <div class="mini-cart-info">
-                        <h6><a href="#">Orange Fresh Juice</a></h6>
-                        <span class="mini-cart-quantity">1 x $68.00</span>
-                    </div>
-                </div>
-            </div>
+            <div class="mini-cart-product-area ltn__scrollbar" id="cartDetails"></div>
             <div class="mini-cart-footer">
                 <div class="mini-cart-sub-total">
-                    <h5>Subtotal: <span>$310.00</span></h5>
+                    <h5>Subtotal: <span id="total"></span></h5>
                 </div>
                 <div class="btn-wrapper">
-                    <a href="cart.html" class="theme-btn-1 btn btn-effect-1">View Cart</a>
-                    <a href="cart.html" class="theme-btn-2 btn btn-effect-2">Checkout</a>
+                <a href="checkout.php" class="theme-btn-2 btn btn-effect-2">Checkout</a>
                 </div>
-                <p>Free Shipping on All Orders Over $100!</p>
             </div>
 
         </div>
@@ -301,9 +266,9 @@ if(isset($_POST['type'])) {
                                 <div class="ltn__shop-details-img-gallery">
                                     <div class="ltn__shop-details-large-img">
                                         <div class="single-large-img">
-                                            <a href="img/product/<?php echo $product[0]['primary_img']; ?>" data-rel="lightcase:myCollection">
-                                                <img src="img/product/<?php echo $product[0]['primary_img']; ?>" alt="Image">
-                                            </a>
+                                            <div style="display: flex; justify-content: center; align-items: center;">
+                                                <img src="img/product/<?php echo $product[0]['primary_img']; ?>" alt="Image" id="productImg" style="max-height: 80%; max-width: 80%;">
+                                            </div>
                                         </div>
                                     </div>
                                 </div>
@@ -312,14 +277,27 @@ if(isset($_POST['type'])) {
                                 <div class="modal-product-info shop-details-info pl-0">
                                     <h3><?php echo $product[0]['name']; ?></h3>
                                     <div class="product-price">
-                                    <span>₹ <?php echo $product[0]['h_price']; ?>.00</span>
-                                    <del>₹ <?php $price = $product[0]['h_price'] * 10 /100; echo round($product[0]['h_price'] + $price); ?>.00</del>
+                                        <span>₹ <?php echo $product[0]['h_price']; ?>.00</span>
+                                        <del>₹ <?php $price = $product[0]['h_price'] * 10 /100; echo round($product[0]['h_price'] + $price); ?>.00</del>
+                                    </div>
+                                    <div class="color-categories">
+                                        <?php 
+                                            $con = array('pro_id' => $product[0]['id']);
+                                            $proVarient = $imitation->get('product_image', '*', NULL, $con);
+                                            
+                                            if(count($proVarient) >= 1) {
+                                                foreach($proVarient as $k => $v) { ?>
+                                                    <div class="color-box" data-proimg="<?php echo $v['id']; ?>" style="background-color:<?php echo $v['color']; ?>;"></div>
+                                            <?php
+                                                }
+                                            }
+                                        ?>
                                     </div>
                                     <div class="ltn__product-details-menu-2">
                                         <ul>
                                             <li>
                                                 <div class="cart-plus-minus">
-                                                    <input type="text" value="1" min="1" name="qtybutton" class="cart-plus-minus-box">
+                                                    <input type="text" value="1" min="1" name="qtybutton" class="cart-plus-minus-box" id="qty">
                                                 </div>
                                             </li>
                                         </ul>
@@ -327,13 +305,13 @@ if(isset($_POST['type'])) {
                                     <div class="ltn__product-details-menu-2">
                                         <ul>
                                             <li>
-                                                <a href="#" class="theme-btn-1 btn btn-effect-1" title="Add to Cart" data-bs-toggle="modal" data-bs-target="#add_to_cart_modal">
+                                                <a class="theme-btn-1 btn btn-effect-1 addProduct" title="Add to Cart" data-proid="<?php echo $product[0]['id']; ?>">
                                                     <i class="fas fa-shopping-cart"></i>
                                                     <span>Add to Cart</span>
                                                 </a>
                                             </li>
                                             <li>
-                                                <a href="#" class="theme-btn-1 btn btn-effect-1" title="Add to Cart" data-bs-toggle="modal" data-bs-target="#add_to_cart_modal">
+                                                <a href="checkout.php" class="theme-btn-1 btn btn-effect-1" title="Buy Now">
                                                     <i class="fas fa-shopping-cart"></i>
                                                     <span>Buy Now</span>
                                                 </a>
@@ -354,146 +332,7 @@ if(isset($_POST['type'])) {
                             </div>
                         </div>
                     </div>
-                    <!-- Shop Tab Start -->
-                    <div class="ltn__shop-details-tab-inner ltn__shop-details-tab-inner-2">
-                        <div class="ltn__shop-details-tab-menu">
-                            <div class="nav">
-                                <a class="active show" data-bs-toggle="tab" href="#liton_tab_details_1_1">Description</a>
-                            </div>
-                        </div>
-                        <div class="tab-content">
-                            <div class="tab-pane fade active show" id="liton_tab_details_1_1">
-                                <div class="ltn__shop-details-tab-content-inner">
-                                    <h4 class="title-2">Lorem ipsum dolor sit amet elit.</h4>
-                                    <p>Lorem ipsum dolor sit amet, consectetur adipisicing elit, sed do eiusmod tempor incididunt ut labore et dolore magna aliqua. Ut enim ad minim veniam, quis nostrud exercitation ullamco laboris nisi ut aliquip ex ea commodo consequat. Duis aute irure dolor in reprehenderit in voluptate velit esse cillum dolore eu fugiat nulla pariatur. Excepteur sint occaecat cupidatat non proident.</p> 
-                                    <p>Lorem ipsum dolor sit amet, consectetur adipisicing elit, sed do eiusmod tempor incididunt ut labore et dolore magna aliqua. Ut enim ad minim veniam, quis nostrud exercitation ullamco laboris nisi ut aliquip ex ea commodo consequat. Duis aute irure dolor in reprehenderit in voluptate velit esse cillum dolore eu fugiat nulla pariatur. Excepteur sint occaecat cupidatat non proident, sunt in culpa qui officia deserunt mollit anim id est laborum. Sed ut perspiciatis unde omnis iste natus error sit voluptatem, totam rem aperiam, eaque ipsa quae ab illo inventore veritatis et quasi architecto beatae vitae dicta sunt explicabo. Nemo enim ipsam voluptatem quia voluptas sit aspernatur aut odit aut fugit, sed quia consequuntur magni dolores eos qui ratione voluptatem sequi nesciunt. Neque porro quisquam est, qui dolorem ipsum quia dolor sit amet, consectetur, adipisci velit, sed quia non numquam eius modi tempora incidunt ut labore et dolore magnam aliquam quaerat voluptatem.</p>
-                                </div>
-                            </div>
-                            <div class="tab-pane fade" id="liton_tab_details_1_2">
-                                <div class="ltn__shop-details-tab-content-inner">
-                                    <h4 class="title-2">Customer Reviews</h4>
-                                    <div class="product-ratting">
-                                        <ul>
-                                            <li><a href="#"><i class="fas fa-star"></i></a></li>
-                                            <li><a href="#"><i class="fas fa-star"></i></a></li>
-                                            <li><a href="#"><i class="fas fa-star"></i></a></li>
-                                            <li><a href="#"><i class="fas fa-star-half-alt"></i></a></li>
-                                            <li><a href="#"><i class="far fa-star"></i></a></li>
-                                            <li class="review-total"> <a href="#"> ( 95 Reviews )</a></li>
-                                        </ul>
-                                    </div>
-                                    <hr>
-                                    <!-- comment-area -->
-                                    <div class="ltn__comment-area mb-30">
-                                        <div class="ltn__comment-inner">
-                                            <ul>
-                                                <li>
-                                                    <div class="ltn__comment-item clearfix">
-                                                        <div class="ltn__commenter-img">
-                                                            <img src="img/testimonial/1.jpg" alt="Image">
-                                                        </div>
-                                                        <div class="ltn__commenter-comment">
-                                                            <h6><a href="#">Adam Smit</a></h6>
-                                                            <div class="product-ratting">
-                                                                <ul>
-                                                                    <li><a href="#"><i class="fas fa-star"></i></a></li>
-                                                                    <li><a href="#"><i class="fas fa-star"></i></a></li>
-                                                                    <li><a href="#"><i class="fas fa-star"></i></a></li>
-                                                                    <li><a href="#"><i class="fas fa-star-half-alt"></i></a></li>
-                                                                    <li><a href="#"><i class="far fa-star"></i></a></li>
-                                                                </ul>
-                                                            </div>
-                                                            <p>Lorem ipsum dolor sit amet, consectetur adipisicing elit. Doloribus, omnis fugit corporis iste magnam ratione.</p>
-                                                            <span class="ltn__comment-reply-btn">September 3, 2020</span>
-                                                        </div>
-                                                    </div>
-                                                </li>
-                                                <li>
-                                                    <div class="ltn__comment-item clearfix">
-                                                        <div class="ltn__commenter-img">
-                                                            <img src="img/testimonial/3.jpg" alt="Image">
-                                                        </div>
-                                                        <div class="ltn__commenter-comment">
-                                                            <h6><a href="#">Adam Smit</a></h6>
-                                                            <div class="product-ratting">
-                                                                <ul>
-                                                                    <li><a href="#"><i class="fas fa-star"></i></a></li>
-                                                                    <li><a href="#"><i class="fas fa-star"></i></a></li>
-                                                                    <li><a href="#"><i class="fas fa-star"></i></a></li>
-                                                                    <li><a href="#"><i class="fas fa-star-half-alt"></i></a></li>
-                                                                    <li><a href="#"><i class="far fa-star"></i></a></li>
-                                                                </ul>
-                                                            </div>
-                                                            <p>Lorem ipsum dolor sit amet, consectetur adipisicing elit. Doloribus, omnis fugit corporis iste magnam ratione.</p>
-                                                            <span class="ltn__comment-reply-btn">September 2, 2020</span>
-                                                        </div>
-                                                    </div>
-                                                </li>
-                                                <li>
-                                                    <div class="ltn__comment-item clearfix">
-                                                        <div class="ltn__commenter-img">
-                                                            <img src="img/testimonial/2.jpg" alt="Image">
-                                                        </div>
-                                                        <div class="ltn__commenter-comment">
-                                                            <h6><a href="#">Adam Smit</a></h6>
-                                                            <div class="product-ratting">
-                                                                <ul>
-                                                                    <li><a href="#"><i class="fas fa-star"></i></a></li>
-                                                                    <li><a href="#"><i class="fas fa-star"></i></a></li>
-                                                                    <li><a href="#"><i class="fas fa-star"></i></a></li>
-                                                                    <li><a href="#"><i class="fas fa-star-half-alt"></i></a></li>
-                                                                    <li><a href="#"><i class="far fa-star"></i></a></li>
-                                                                </ul>
-                                                            </div>
-                                                            <p>Lorem ipsum dolor sit amet, consectetur adipisicing elit. Doloribus, omnis fugit corporis iste magnam ratione.</p>
-                                                            <span class="ltn__comment-reply-btn">September 2, 2020</span>
-                                                        </div>
-                                                    </div>
-                                                </li>
-                                            </ul>
-                                        </div>
-                                    </div>
-                                    <!-- comment-reply -->
-                                    <div class="ltn__comment-reply-area ltn__form-box mb-30">
-                                        <form action="#">
-                                            <h4 class="title-2">Add a Review</h4>
-                                            <div class="mb-30">
-                                                <div class="add-a-review">
-                                                    <h6>Your Ratings:</h6>
-                                                    <div class="product-ratting">
-                                                        <ul>
-                                                            <li><a href="#"><i class="fas fa-star"></i></a></li>
-                                                            <li><a href="#"><i class="fas fa-star"></i></a></li>
-                                                            <li><a href="#"><i class="fas fa-star"></i></a></li>
-                                                            <li><a href="#"><i class="fas fa-star-half-alt"></i></a></li>
-                                                            <li><a href="#"><i class="far fa-star"></i></a></li>
-                                                        </ul>
-                                                    </div>
-                                                </div>
-                                            </div>
-                                            <div class="input-item input-item-textarea ltn__custom-icon">
-                                                <textarea placeholder="Type your comments...."></textarea>
-                                            </div>
-                                            <div class="input-item input-item-name ltn__custom-icon">
-                                                <input type="text" placeholder="Type your name....">
-                                            </div>
-                                            <div class="input-item input-item-email ltn__custom-icon">
-                                                <input type="email" placeholder="Type your email....">
-                                            </div>
-                                            <div class="input-item input-item-website ltn__custom-icon">
-                                                <input type="text" name="website" placeholder="Type your website....">
-                                            </div>
-                                            <label class="mb-0"><input type="checkbox" name="agree"> Save my name, email, and website in this browser for the next time I comment.</label>
-                                            <div class="btn-wrapper">
-                                                <button class="btn theme-btn-1 btn-effect-1 text-uppercase" type="submit">Submit</button>
-                                            </div>
-                                        </form>
-                                    </div>
-                                </div>
-                            </div>
-                        </div>
-                    </div>
-                    <!-- Shop Tab End -->
+                    
                 </div>
             </div>
         </div>
@@ -815,7 +654,7 @@ if(isset($_POST['type'])) {
                     </div>
                     <div class="modal-body">
                          <div class="ltn__quick-view-modal-inner">
-                             <div class="modal-product-item">
+                             <div class="modal-product-item" style="margin-top: -50px">
                                 <div class="row">
                                     <div class="col-12">
                                         <div class="modal-product-info">
@@ -895,16 +734,17 @@ if(isset($_POST['type'])) {
     });
 
     $(document).on('click', '.color-box', function() {
+        var id = "<?php echo $_GET['id']; ?>";
         var proimgid = $(this).data("proimg");
         $.ajax({
-            url: 'index.php',
+            url: 'product-details.php?id=' + id,
             method: 'POST',
             data: {
                 type: "getProductImg",
                 proImgId: proimgid
             },
             success: function(response){
-                $('#product-img').attr('src', 'img/product/' + response);
+                $('#productImg').attr('src', 'img/product/' + response);
             }
         });
     });
@@ -934,13 +774,14 @@ if(isset($_POST['type'])) {
     });
 
     $(document).on('click', '.addProduct', function() {
+        var id = "<?php echo $_GET['id']; ?>";
         if(user_id == '') {
             window.location.href = 'login.php';
         } else {
             var proid = $(this).data("proid");
             var qty = $('#qty').val();
             $.ajax({
-                url: 'index.php',
+                url: 'product-details.php?id=' + id,
                 method: 'POST',
                 dataType: 'json',
                 data: {
@@ -950,12 +791,7 @@ if(isset($_POST['type'])) {
                 },
                 success: function(response){
                     $('#add_to_cart_modal').modal('show');
-                    if(response.status == 'added') {
-                        $('#cart').text('Already added this product.');
-                    } else {
-                        $('.totalPro').text(response.totalProduct);
-                        $('#cart').html('<i class="fa fa-check-circle"></i>  Successfully added to your Cart');
-                    }
+                    $('.totalPro').text(response.totalProduct);
                 }
             });
         }

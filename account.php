@@ -488,7 +488,17 @@ $imitation = new imitation();
     <script src="js/plugins.js"></script>
     <!-- Main JS -->
     <script src="js/main.js"></script>
-  
+    
+    <script>
+        $(document).ready(function() {
+            var urlParams = new URLSearchParams(window.location.search);
+            if(urlParams.has('account') && urlParams.get('account') === '1') {
+                $('a[href="#liton_tab_1_1"]').removeClass('active show');
+                $('a[href="#liton_tab_1_5"]').addClass('active show');
+                $('#liton_tab_1_5').addClass('show active');
+            }
+        });
+    </script>
 </body>
 
 <!-- Mirrored from tunatheme.com/tf/html/broccoli-preview/broccoli/account.html by HTTrack Website Copier/3.x [XR&CO'2014], Sat, 02 Mar 2024 06:19:47 GMT -->
