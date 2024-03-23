@@ -2,6 +2,7 @@
 
 session_start();
 include_once("config.php");
+include_once("email.php");
 $imitation = new imitation();
 $msg = "";
 
@@ -28,6 +29,41 @@ if(isset($_POST['submit'])) {
         }
     } else {
         $msg = "<div class='alert alert-danger'>OTP is invalid.</div>";
+    }
+}
+
+if(isset($_POST['type'])) {
+    if($_POST['type'] == 'resendotp') {
+        $con = array('email' => $_SESSION['email']);
+        $userData = $imitation->get('users', '*', NULL, $con);
+
+        if($userData) {
+            $otp = rand(10000, 999999);
+            $_SESSION['otp']  = $otp;
+            $email = $_SESSION['email'];
+            $name = $userData[0]['first_name'] . ' ' . $userData[0]['last_name'];
+            $html = "Dear $name, <br><br>
+                        Thank you for choosing Heers imitation jewellery house. To ensure the security of your account, we require you to verify your email address with the following One-Time Password (OTP):
+                        <br><br>
+                        OTP: <b>$otp</b>
+                        <br><br>
+                        Please use the above OTP to complete the verification process. This OTP is valid for a limited time period only and should not be shared with anyone. If you did not request this OTP, please ignore this email.
+                        <br><br>
+                        Best regards, <br>
+                        <b>Heer's Imitation Jewellery House</b>
+                        <br><br>
+                        <img src='cid:logo' alt='Company Logo' style='height:80%; width:80%;'>";
+    
+            if(smtp_mailer($email, 'OTP Request', $html)) {
+                echo 'success';
+            } else {
+                echo 'Something went wrong !!!';
+            }
+        } else {
+            echo 'Something went wrong !!!';
+        }
+
+        exit;
     }
 }
 ?>
@@ -75,7 +111,7 @@ if(isset($_POST['submit'])) {
                             <div class="go-to-btn mt-20">
                                 <div class="row">
                                     <div class="col-lg-6">
-                                        <a href="resend-otp.php"><small>Resend OTP?</small></a>
+                                        <span id="resendotp"><small>Resend OTP?</small></span>
                                     </div>
                                 </div>
                             </div>
@@ -100,6 +136,7 @@ if(isset($_POST['submit'])) {
     <script src="js/main.js"></script>
     <script src="http://ajax.googleapis.com/ajax/libs/jquery/1.9.1/jquery.min.js"></script>
     <script src="https://cdn.jsdelivr.net/jquery.validation/1.16.0/jquery.validate.min.js"></script>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/sweetalert/2.1.2/sweetalert.min.js"></script>
     <script>
         $(document).ready(function() {
             // Add validation rules to the form
@@ -114,6 +151,24 @@ if(isset($_POST['submit'])) {
                     otp: {
                         required: "Please enter the 6 digits OTP.",
                         digits: "Please enter only digits.",
+                    }
+                }
+            });
+        });
+
+        $(document).on('click', '#resendotp', function() {
+            $.ajax({
+                url: 'otp.php',
+                method: 'POST',
+                data: {
+                    type: "resendotp"
+                },
+                success: function(response){
+                    if(response == 'success') {
+                        swal({
+                              title: 'Successfully sent OTP to your register email',
+                              icon: 'success'
+                        })
                     }
                 }
             });

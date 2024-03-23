@@ -14,6 +14,7 @@ if (isset($_POST['submit'])) {
         $array = array(
             "first_name" => $_POST['firstname'],
             "last_name" => $_POST['lastname'],
+            "contact" => $_POST['contact'],
             "email" => $_POST['email'],
             "password" => base64_encode($_POST['password']),
         );
@@ -161,6 +162,7 @@ if (isset($_POST['submit'])) {
                             <input type="text" name="firstname" id="firstname" placeholder="First Name">
                             <input type="text" name="lastname" id="lastname" placeholder="Last Name">
                             <input type="text" name="email" id="email" placeholder="Email*">
+                            <input type="text" name="contact" id="contact" inputmode="numeric" maxlength="10" placeholder="Contact Number*">
                             <input type="password" name="password" id="password" placeholder="Password*">
                             <input type="password" name="confirmpassword" id="confirmpassword" placeholder="Confirm Password*">
                             <div class="btn-wrapper">
@@ -203,6 +205,10 @@ if (isset($_POST['submit'])) {
                     lastname: {
                         required: true
                     },
+                    contact: {
+                        required: true,
+                        digits: true,
+                    },
                     email: {
                         required: true,
                         email: true
@@ -221,6 +227,10 @@ if (isset($_POST['submit'])) {
                     },
                     lastname: {
                         required: "Please enter the last name"
+                    },
+                    contact: {
+                        required: "Please enter the contact number",
+                        digits: "Please enter only digits",
                     },
                     email: {
                         required: "Please enter the email",
