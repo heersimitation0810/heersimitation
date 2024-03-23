@@ -22,7 +22,7 @@ if (isset($_POST['submit'])) {
         $result = $imitation->insert("users", $array);
         $email = $_POST['email'];
         if($result) {
-            $otp = rand(10000, 999999);
+            $otp = rand(100000, 999999);
             $_SESSION['otp']  = $otp;
             $_SESSION['email'] = $email;
             $name = $_POST['firstname'] . ' ' . $_POST['lastname'];

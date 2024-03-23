@@ -38,7 +38,7 @@ if(isset($_POST['type'])) {
         $userData = $imitation->get('users', '*', NULL, $con);
 
         if($userData) {
-            $otp = rand(10000, 999999);
+            $otp = rand(100000, 999999);
             $_SESSION['otp']  = $otp;
             $email = $_SESSION['email'];
             $name = $userData[0]['first_name'] . ' ' . $userData[0]['last_name'];
