@@ -259,15 +259,8 @@ if(isset($_POST['type'])) {
     <!-- IMAGE SLIDER AREA END -->
     
     <!-- CATEGORY AREA START -->
-    <div class="ltn__category-area section-bg-1--- pt-80 pb-85">
+    <div class="ltn__category-area section-bg-1--- pt-30 pb-85">
         <div class="container">
-            <div class="row">
-                <div class="col-lg-12">
-                    <div class="section-title-area ltn__section-title-2--- text-center">
-                        <h1 class="section-title white-color---">Catagories</h1>
-                    </div>
-                </div>
-            </div>
             <div class="row ltn__category-slider-active--- slick-arrow-1">
                 <div class="col-lg-3 col-md-4 col-sm-6 col-6">
                     <div class="ltn__category-item ltn__category-item-3 text-center">
@@ -420,7 +413,6 @@ if(isset($_POST['type'])) {
                             <a data-bs-toggle="tab" href="#liton_tab_3_2" class="">Rings</a>
                             <a data-bs-toggle="tab" href="#liton_tab_3_3" class="">Bracelets</a>
                             <a data-bs-toggle="tab" href="#liton_tab_3_4" class="">Necklace</a>
-                            <a data-bs-toggle="tab" href="#liton_tab_3_5" class="">Chains</a>
                         </div>
                     </div>
                     <div class="tab-content">
@@ -432,26 +424,12 @@ if(isset($_POST['type'])) {
                                         $earrings = $imitation->get('product', '*', NULL, $condition);
 
                                         foreach($earrings as $key => $val) { ?>
-                                            <!-- ltn__product-item -->
                                             <div class="col-lg-12">
                                                 <div class="ltn__product-item ltn__product-item-3 text-center">
                                                     <div class="product-img">
-                                                        <a>
+                                                        <a href="product-details.php?id=<?php echo base64_encode($val['id']); ?>">
                                                             <img src="img/product/<?php echo $val['primary_img']?>" alt="#" style="margin-top:10px; height:200px; width:200px;">
                                                         </a>
-                                                        <div class="product-hover-action">
-                                                            <ul>
-                                                                <li>
-                                                                    <a title="Quick View" data-bs-toggle="modal" data-bs-target="#quick_view_modal" class="view" data-proid="<?php echo $val['id']; ?>">
-                                                                        <i class="far fa-eye"></i>
-                                                                    </a>
-                                                                </li>
-                                                                <li>
-                                                                    <a title="Wishlist" class="wishlist" data-proid="<?php echo $val['id']; ?>">
-                                                                        <i class="far fa-heart"></i></a>
-                                                                </li>
-                                                            </ul>
-                                                        </div>
                                                     </div>
                                                     <div class="product-info">
                                                         <h2 class="product-title"><a href="#"><?php echo $val['name']; ?></a></h2>
@@ -460,6 +438,7 @@ if(isset($_POST['type'])) {
                                                             <span>₹ <?php echo $val['h_price']; ?>.00</span>
                                                             <del>₹ <?php $price = $val['h_price'] * 10 /100; echo round($val['h_price'] + $price); ?>.00</del>
                                                         </div>
+                                                        <span class="wishlist-cart-item-delete wishlist" data-proid="<?php echo $val['id']?>"><i class="far fa-heart"></i></span>
                                                     </div>
                                                 </div>
                                             </div>
@@ -1589,49 +1568,31 @@ if(isset($_POST['type'])) {
                             <div class="ltn__product-tab-content-inner">
                                 <div class="row ltn__tab-product-slider-one-active slick-arrow-1">
                                 <?php 
-                                        $condition = array('cat_id' => '4');
-                                        $earrings = $imitation->get('product', '*', NULL, $condition);
+                                    $condition = array('cat_id' => '4');
+                                    $earrings = $imitation->get('product', '*', NULL, $condition);
 
-                                        foreach($earrings as $key => $val) { ?>
-                                            <!-- ltn__product-item -->
-                                            <div class="col-lg-12">
+                                    foreach($earrings as $key => $val) { ?>
+                                        <div class="col-lg-12">
                                                 <div class="ltn__product-item ltn__product-item-3 text-center">
                                                     <div class="product-img">
-                                                        <a href="product-details.html">
+                                                        <a href="product-details.php?id=<?php echo base64_encode($val['id']); ?>">
                                                             <img src="img/product/<?php echo $val['primary_img']?>" alt="#" style="margin-top:10px; height:200px; width:200px;">
                                                         </a>
-                                                        <div class="product-hover-action">
-                                                            <ul>
-                                                                <li>
-                                                                    <a href="#" title="Quick View" data-bs-toggle="modal" data-bs-target="#quick_view_modal" class="view" data-proid="<?php echo $val['id']; ?>">
-                                                                        <i class="far fa-eye"></i>
-                                                                    </a>
-                                                                </li>
-                                                                <li>
-                                                                    <a href="#" title="Add to Cart" data-bs-toggle="modal" data-bs-target="#add_to_cart_modal" class="cart" data-proid="<?php echo $val['id']; ?>">
-                                                                        <i class="fas fa-shopping-cart"></i>
-                                                                    </a>
-                                                                </li>
-                                                                <li>
-                                                                    <a href="#" title="Wishlist" data-bs-toggle="modal" data-bs-target="#liton_wishlist_modal">
-                                                                        <i class="far fa-heart"></i></a>
-                                                                </li>
-                                                            </ul>
-                                                        </div>
                                                     </div>
                                                     <div class="product-info">
-                                                        <h2 class="product-title"><a href="product-details.html"><?php echo $val['name']; ?></a></h2>
+                                                        <h2 class="product-title"><a href="#"><?php echo $val['name']; ?></a></h2>
                                                         <span>P. <?php echo $val['code']; ?></span>
                                                         <div class="product-price">
                                                             <span>₹ <?php echo $val['h_price']; ?>.00</span>
                                                             <del>₹ <?php $price = $val['h_price'] * 10 /100; echo round($val['h_price'] + $price); ?>.00</del>
                                                         </div>
+                                                        <span class="wishlist-cart-item-delete wishlist" data-proid="<?php echo $val['id']?>"><i class="far fa-heart"></i></span>
                                                     </div>
                                                 </div>
-                                            </div>
-                                    <?php 
-                                        }
-                                    ?>
+                                            </div>            
+                                <?php 
+                                    }
+                                ?>
                                 </div>
                             </div>
                         </div>
@@ -2258,25 +2219,12 @@ if(isset($_POST['type'])) {
                         <div class="col-lg-3 col-md-4 col-sm-6 col-6">
                             <div class="ltn__product-item ltn__product-item-3 text-left">
                                 <div class="product-img">
-                                    <a style="display: flex; justify-content: center;">
+                                    <a href="product-details.php?id=<?php echo base64_encode($val['id']); ?>" style="display: flex; justify-content: center;">
                                         <img src="img/product/<?php echo $val['primary_img']; ?>" alt="#" style="margin-top:10px; height:200px; width:200px; object-fit: cover;">
                                     </a>
                                     <div class="product-badge">
                                         <ul>
                                             <li class="sale-badge">New</li>
-                                        </ul>
-                                    </div>
-                                    <div class="product-hover-action">
-                                        <ul>
-                                            <li>
-                                                <a href="#" title="Quick View" class="view" data-proid="<?php echo $val['id']; ?>">
-                                                    <i class="far fa-eye"></i>
-                                                </a>
-                                            </li>
-                                            <li>
-                                                <a href="#" title="Wishlist" class="wishlist" data-proid="<?php echo $val['id']; ?>">
-                                                    <i class="far fa-heart"></i></a>
-                                            </li>
                                         </ul>
                                     </div>
                                 </div>

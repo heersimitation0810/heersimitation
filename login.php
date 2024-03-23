@@ -108,10 +108,10 @@ if(isset($_POST['submit'])) {
                             <div class="go-to-btn mt-20">
                                 <div class="row">
                                     <div class="col-lg-6">
-                                        <a href="#"><small>FORGOTTEN YOUR PASSWORD?</small></a>
+                                        <a href="#"><small>Forgotten your password?</small></a>
                                     </div>
                                     <div class="col-lg-6">
-                                        <a href="#"><small>Create a new account ?</small></a>
+                                        <a href="register.php"><small>Create a new account ?</small></a>
                                     </div>
                                 </div>
                             </div>

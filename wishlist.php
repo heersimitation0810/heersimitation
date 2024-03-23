@@ -7,7 +7,59 @@ if(isset($_POST['type'])) {
     if(!isset($_SESSION['user_id']) && !isset($_SESSION['email'])) {
         header("Location:login.php");
     }
+    
     $user_id = $_SESSION['user_id'];
+    if($_POST['type'] == 'removeWishlist') {
+        $html = '';
+        $proId = $_POST['proId'];
+        $proCon = array("user_id" => $user_id, "pro_id" => $proId);
+        $deletePro = $imitation->delete("wishlist", $proCon);
+
+        $user_id = $_SESSION['user_id'];
+        $select ="product.id, product.name, product.primary_img, product.h_price";
+        $joins = "LEFT JOIN wishlist ON  wishlist.pro_id = product.id
+                    WHERE  wishlist.user_id='$user_id'
+                    GROUP BY product.id
+                    ORDER BY  wishlist.created_at DESC";
+        $product = $imitation->get('product', $select, $joins);
+        
+        if(count($product) >= 1) {
+            foreach($product as $key => $val) { 
+                $price = $val['h_price'] * 10 / 100;
+                $discounted_price = round($val['h_price'] + $price);
+        
+                $html .= '<div class="col-lg-3 col-md-4 col-sm-6 col-6">
+                            <div class="ltn__product-item ltn__product-item-3 text-left">
+                                <div class="product-img">
+                                    <a href="product-details.html" style="display: flex; justify-content: center;">
+                                        <img src="img/product/'. $val['primary_img'] .'" alt="#" style="margin-top:10px; height:200px; width:200px; object-fit: cover;">
+                                    </a>
+                                </div>
+                                <div class="product-info">
+                                    <h2 class="product-title" style="text-align:center;"><a href="product-details.html">'. $val['name'] .'</a></h2>
+                                    <div class="product-price" style="text-align:center;">
+                                        <span>₹'. $val['h_price']. '.00</span>
+                                        <del>₹'. $discounted_price . '.00</del>
+                                    </div>
+                                </div>
+                                <span class="wishlist-cart-item-delete" id="remove-wishlist" data-proid="'. $val['id'] .'"><i class="icon-cancel"></i></span>
+                            </div>
+                        </div>';
+            }
+        } else {
+            $html .= '<div class="col-lg-12 col-md-12 col-sm-12 col-12">
+                        <p style="text-align:center;">No Record Found</p>
+                      </div>';
+        }
+        
+        $resultArry = [
+            'html' => $html
+        ];
+
+        echo json_encode($resultArry);
+        exit;
+    }
+    
     if($_POST['type'] == 'removeItem') {
         $proId = $_POST['proId'];
         $proCon = array("user_id" => $user_id, "pro_id" => $proId);
@@ -263,7 +315,7 @@ if(isset($_POST['type'])) {
                         </div>
                     </div>
                 </div>
-                <div class="row ltn__tab-product-slider-one-active--- slick-arrow-1">
+                <div class="row ltn__tab-product-slider-one-active--- slick-arrow-1" id="wishlist-show">
                     <!-- ltn__product-item -->
                     <?php
                         $user_id = $_SESSION['user_id'];
@@ -282,15 +334,6 @@ if(isset($_POST['type'])) {
                                         <a href="product-details.html" style="display: flex; justify-content: center;">
                                             <img src="img/product/<?php echo $val['primary_img']; ?>" alt="#" style="margin-top:10px; height:200px; width:200px; object-fit: cover;">
                                         </a>
-                                        <div class="product-hover-action">
-                                            <ul>
-                                                <li>
-                                                    <a href="#" title="Quick View" data-bs-toggle="modal" data-bs-target="#quick_view_modal" class="view" data-proid="<?php echo $val['id']; ?>">
-                                                        <i class="far fa-eye"></i>
-                                                    </a>
-                                                </li>
-                                            </ul>
-                                        </div>
                                     </div>
                                     <div class="product-info">
                                         <h2 class="product-title" style="text-align:center;"><a href="product-details.html"><?php echo $val['name']; ?></a></h2>
@@ -299,6 +342,7 @@ if(isset($_POST['type'])) {
                                             <del>₹ <?php $price = $val['h_price'] * 10 /100; echo round($val['h_price'] + $price); ?>.00</del>
                                         </div>
                                     </div>
+                                    <span class="wishlist-cart-item-delete" id="remove-wishlist" data-proid="<?php echo $val['id']?>"><i class="icon-cancel"></i></span>
                                 </div>
                             </div>
                         <?php }
@@ -486,6 +530,22 @@ if(isset($_POST['type'])) {
                     $('.totalPro').text('');
                 }
                 $('#showCart').click();
+            }
+        });
+    });
+
+    $(document).on('click', '#remove-wishlist', function() {
+        var proid = $(this).data("proid");
+        $.ajax({
+            url: 'wishlist.php',
+            method: 'POST',
+            dataType: 'json',
+            data: {
+                type: "removeWishlist",
+                proId: proid
+            },
+            success: function(response){
+                $('#wishlist-show').html(response.html);
             }
         });
     });
