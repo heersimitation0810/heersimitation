@@ -108,7 +108,7 @@ if(isset($_SESSION['user_id']) && isset($_SESSION['email'])) {
     <div class="ltn__utilize-overlay"></div>
 
     <!-- WISHLIST AREA START -->
-    <div class="ltn__checkout-area mb-105">
+    <div class="ltn__checkout-area">
         <div class="container">
             <div class="row">
                 <div class="col-lg-12">
@@ -135,7 +135,7 @@ if(isset($_SESSION['user_id']) && isset($_SESSION['email'])) {
                                 ?>
                                 </div>
                             </div>
-                            <div class="ltn__checkout-single-content-info mt-20">
+                            <div class="ltn__checkout-single-content-info mt-20" id="stopScrollHere">
                                 <h3>Address Details</h3>
                                 <div class="row">
                                 <?php 
@@ -156,12 +156,17 @@ if(isset($_SESSION['user_id']) && isset($_SESSION['email'])) {
                                                             <?php echo $val['address_line1'] . ', ' . $val['address_line2'] . ', ' . $val['city'] . ', ' . $val['state'] . ', ' . $val['country'] . ', ' . $val['zipcode']; ?>
                                                         </label>
                                                     </div>
-                                                    <a href="edit-address.php?id=<?php echo $val['id']; ?>" style="position: absolute; top: 10px; right: 10px;">Edit</a>
+                                                    <a href="edit-address.php?id=<?php echo base64_encode($val['id']); ?>" style="position: absolute; top: 0px; right: 10px;">Edit</a>
                                                 </div>
                                             </div>
                                     <?php  
                                         }
-                                    }
+                                    } else { ?>
+                                        <div class="col-md-12">
+                                            <span>No Address Found</span>
+                                        </div>
+                                    <?php 
+                                        }
                                     ?>
                                 </div>
                                 <div class="row mt-20">
@@ -169,7 +174,7 @@ if(isset($_SESSION['user_id']) && isset($_SESSION['email'])) {
                                         <a href="add-address.php" class="btn theme-btn-1 btn-effect-1">Add New Address</a>
                                     </div>
                                 </div>
-                                
+                                <span id="shipping-error" style="display:none;">Please add shipping addresss</span>
                             </div>
                         </div>
                     </div>
@@ -209,10 +214,14 @@ if(isset($_SESSION['user_id']) && isset($_SESSION['email'])) {
                                     <td><strong>Order Total</strong></td>
                                     <td><strong>₹ <?php echo $total >= 1 ? $total : 0; ?></strong></td>
                                 </tr>
+                                <tr>
+                                    <td colspan="2">
+                                        <a href="cart.php" class="btn theme-btn-1 btn-effect-1 mt-10" type="submit">Update Cart</a>
+                                    </td>
+                                </tr>
                             </tbody>
                         </table>
                     </div>
-                    <button class="btn theme-btn-1 btn-effect-1 mt-10" type="submit">Update Cart</button>
                 </div>
                 
                 <div class="col-lg-6">
@@ -242,25 +251,34 @@ if(isset($_SESSION['user_id']) && isset($_SESSION['email'])) {
 
 <script>
     $("#submit").click(function(event) {
-        var amt = "<?php echo $total; ?>";
-        var options = {
-                "key": "rzp_test_eh4xkcqTW9H6ka",
-                "amount": amt * 100,
-                "currency": "INR",
-                "name": "Heers Imitation Jewelery House",
-                "description": "Test Transaction",
-                "color": "orange",
-                "image": "logo.png",
-                "handler": function(response) {
-                    // $("#paymentId").val(response.razorpay_payment_id);
-                    // getResponse();
-                },
-                "theme": {
-                    "color": "orange"
-                }
-            };
-        var rzp1 = new Razorpay(options);
-        rzp1.open();
+        var addressCount = "<?php echo count($addressData); ?>"
+        if(addressCount >= 1) {
+            $('#shipping-error').css('display', 'none');
+            var amt = "<?php echo $total; ?>";
+            var options = {
+                    "key": "rzp_test_eh4xkcqTW9H6ka",
+                    "amount": amt * 100,
+                    "currency": "INR",
+                    "name": "Heers Imitation Jewellery House",
+                    "description": "Test Transaction",
+                    "color": "black",
+                    "image": "logo.png",
+                    "handler": function(response) {
+                        // $("#paymentId").val(response.razorpay_payment_id);
+                        // getResponse();
+                    },
+                    "theme": {
+                        "color": "black"
+                    }
+                };
+            var rzp1 = new Razorpay(options);
+            rzp1.open();
+        } else {
+            $('#shipping-error').css('display', '');
+            $('html, body').animate({
+                scrollTop: $('#stopScrollHere').offset().top
+            }, 100);
+        }
     });
 </script>
 </body>

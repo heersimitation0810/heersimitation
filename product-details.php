@@ -297,7 +297,9 @@ if(isset($_POST['type'])) {
                                         <ul>
                                             <li>
                                                 <div class="cart-plus-minus">
+                                                    <div class="dec qtybutton">-</div>
                                                     <input type="text" value="1" min="1" name="qtybutton" class="cart-plus-minus-box" id="qty">
+                                                    <div class="inc qtybutton">+</div>
                                                 </div>
                                             </li>
                                         </ul>
@@ -660,8 +662,7 @@ if(isset($_POST['type'])) {
                                         <div class="modal-product-info">
                                             <p class="added-cart" id="cart"><i class="fa fa-check-circle"></i>  Successfully added to your Cart</p>
                                             <div class="btn-wrapper">
-                                                <a class="theme-btn-1 btn btn-effect-1" id="viewCart">View Cart</a>
-                                                <a href="checkout.php" class="theme-btn-2 btn btn-effect-2">Checkout</a>
+                                                <a href="cart.php" class="theme-btn-1 btn btn-effect-1">View Cart</a>
                                             </div>
                                         </div>
                                     </div>
