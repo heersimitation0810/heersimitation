@@ -313,7 +313,7 @@ if(isset($_POST['type'])) {
                                                 </a>
                                             </li>
                                             <li>
-                                                <a href="checkout.php" class="theme-btn-1 btn btn-effect-1" title="Buy Now">
+                                                <a class="theme-btn-1 btn btn-effect-1" id="buynow" data-proid="<?php echo $product[0]['id'];?>" title="Buy Now">
                                                     <i class="fas fa-shopping-cart"></i>
                                                     <span>Buy Now</span>
                                                 </a>
@@ -793,6 +793,30 @@ if(isset($_POST['type'])) {
                 success: function(response){
                     $('#add_to_cart_modal').modal('show');
                     $('.totalPro').text(response.totalProduct);
+                }
+            });
+        }
+    });
+
+    $(document).on('click', '#buynow', function() {
+        var id = "<?php echo $_GET['id']; ?>";
+        if(user_id == '') {
+            window.location.href = 'login.php';
+        } else {
+            var proid = $(this).data("proid");
+            var qty = $('#qty').val();
+            $.ajax({
+                url: 'product-details.php?id=' + id,
+                method: 'POST',
+                dataType: 'json',
+                data: {
+                    type: "addCart",
+                    proId: proid,
+                    qty: qty
+                },
+                success: function(response){
+                    $('.totalPro').text(response.totalProduct);
+                    window.location.href = 'checkout.php';
                 }
             });
         }

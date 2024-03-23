@@ -124,7 +124,7 @@
                         
                         ?>
                         <div class="mini-cart-icon">
-                            <a href="#ltn__utilize-cart-menu" class="ltn__utilize-toggle" id="showCart">
+                            <a href="cart.php" class="ltn__utilize-toggle" id="showCart">
                                 <i class="icon-shopping-cart" style="color:goldenrod;"></i>
                                 <sup style="color:goldenrod;" class="totalPro"><?php 
                                     if(isset($_SESSION['user_id']) && isset($_SESSION['email'])) {
