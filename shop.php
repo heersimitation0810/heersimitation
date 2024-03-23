@@ -284,7 +284,7 @@ if(isset($_POST['type'])) {
                                         $items_per_page = 10;
                                         $current_page = isset($_GET['page']) ? $_GET['page'] : 1;
                                         $offset = ($current_page - 1) * $items_per_page;
-                                        // $condition = array('cat_id' => $catId);
+                                        $condition = array('cat_id' => $catId);
                                         // $earrings = $imitation->get('product', '*', NULL, $condition, "LIMIT $offset, $items_per_page");
                                         $total_records = count($imitation->get('product', 'id', NULL, $condition));
                                         $total_pages = ceil($total_records / $items_per_page);
@@ -296,20 +296,9 @@ if(isset($_POST['type'])) {
                                             <div class="col-xl-4 col-sm-6 col-6">
                                                 <div class="ltn__product-item ltn__product-item-3 text-center">
                                                     <div class="product-img">
-                                                        <a><img src="img/product/<?php echo $val['primary_img']; ?>" alt="#" style="margin-top:10px; height:200px; width:200px;"></a>
-                                                        <div class="product-hover-action">
-                                                            <ul>
-                                                                <li>
-                                                                    <a href="#" title="Quick View" data-bs-toggle="modal" data-bs-target="#quick_view_modal" class="view" data-proid="<?php echo $val['id']; ?>">
-                                                                        <i class="far fa-eye"></i>
-                                                                    </a>
-                                                                </li>
-                                                                <li>
-                                                                    <a href="#" title="Wishlist" class="wishlist" data-proid="<?php echo $val['id']; ?>">
-                                                                        <i class="far fa-heart"></i></a>
-                                                                </li>
-                                                            </ul>
-                                                        </div>
+                                                        <a href="product-details.php?id=<?php echo base64_encode($val['id']); ?>">
+                                                            <img src="img/product/<?php echo $val['primary_img']; ?>" alt="#" style="margin-top:10px; height:200px; width:200px;">
+                                                        </a>
                                                     </div>
                                                     <div class="product-info">
                                                         <h2 class="product-title"><a><?php echo $val['name']; ?></a></h2>
@@ -318,6 +307,7 @@ if(isset($_POST['type'])) {
                                                             <span>₹ <?php echo $val['h_price']; ?>.00</span>
                                                             <del>₹ <?php $price = $val['h_price'] * 10 /100; echo round($val['h_price'] + $price); ?>.00</del>
                                                         </div>
+                                                        <span class="wishlist-cart-item-delete wishlist" data-proid="<?php echo $val['id']?>"><i class="far fa-heart"></i></span>
                                                     </div>
                                                 </div>
                                             </div>
