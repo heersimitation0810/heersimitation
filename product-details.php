@@ -13,6 +13,11 @@ $proImages = $imitation->get('product_image', '*', NULL, $con);
 
 if(isset($_POST['type'])) {
     $user_id = isset($_SESSION['user_id']) ? $_SESSION['user_id'] : '';
+    if($_POST['type'] == 'setSession') {
+        $_SESSION['page'] = 'product-details.php?id=' . $_GET['id'];
+        $_SESSION['qty'] = $_POST['qty'];
+    }
+
     if($_POST['type'] == 'removeItem') {
         $proId = $_POST['proId'];
         $proCon = array("user_id" => $user_id, "pro_id" => $proId);
@@ -302,7 +307,7 @@ if(isset($_POST['type'])) {
                                             <li>
                                                 <div class="cart-plus-minus">
                                                     <div class="dec qtybutton">-</div>
-                                                    <input type="text" value="1" min="1" name="qtybutton" class="cart-plus-minus-box" id="qty">
+                                                    <input type="text" value="<?php echo isset($_SESSION['qty']) ? $_SESSION['qty'] : '1'; ?>" min="1" name="qtybutton" class="cart-plus-minus-box" id="qty">
                                                     <div class="inc qtybutton">+</div>
                                                 </div>
                                                 <span class="qty-error" style="color:red; display:none;">Please add quantity</span>
@@ -788,7 +793,17 @@ if(isset($_POST['type'])) {
         if(qty >= 1) { 
             $('.qty-error').css('display', 'none');
             if(user_id == '') {
-                window.location.href = 'login.php';
+                $.ajax({
+                    url: 'product-details.php?id=' + id,
+                    method: 'POST',
+                    data: {
+                        type: "setSession",
+                        qty: qty
+                    },
+                    success: function(response){
+                        window.location.href = 'login.php';
+                    }
+                });
             } else {
                 var proid = $(this).data("proid");
                 var qty = $('#qty').val();
@@ -822,7 +837,16 @@ if(isset($_POST['type'])) {
         if(qty >= 1) {
             $('.qty-error').css('display', 'none');
             if(user_id == '') {
-                window.location.href = 'login.php';
+                $.ajax({
+                    url: 'product-details.php?id=' + id,
+                    method: 'POST',
+                    data: {
+                        type: "setSession",
+                    },
+                    success: function(response){
+                        window.location.href = 'login.php';
+                    }
+                });
             } else {
                 var proid = $(this).data("proid");
                 var qty = $('#qty').val();

@@ -101,6 +101,7 @@ if(isset($_POST['type'])) {
                 if(smtp_mailer($email, $subject, $html)) {
                     $tmpCon = array('user_id' => $user_id);
                     $tmpOrderRemove = $imitation->delete('tmp_cart', $tmpCon);
+                    $_SESSION['order-status'] = '1';
                     echo 'success';
                 } else {
                     echo 'failed';
@@ -315,7 +316,7 @@ if(isset($_POST['type'])) {
                                 </tr>
                                 <tr>
                                     <td colspan="2">
-                                        <a href="cart.php" class="btn theme-btn-1 btn-effect-1 mt-10" type="submit">Update Cart</a>
+                                        <a href="cart.php" class="btn theme-btn-1 btn-effect-1 mt-10" type="submit">View Cart</a>
                                     </td>
                                 </tr>
                             </tbody>

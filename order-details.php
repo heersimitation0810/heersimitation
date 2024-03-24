@@ -90,12 +90,39 @@ if(isset($_POST['type'])) {
                     <div class="shoping-cart-inner">
                         <div class="shoping-cart-table table-responsive">
                             <div class="ltn__checkout-single-content-info mt-20">
+                                <h3>Order Details</h3>
                                 <div class="row" id="showCart">
-                                    <h4><i class="fa fa-check-circle" style="color:green;"></i> Your order is successfully confirm.</h4>
-                                    <span>Thank you for purchase in Heers Imitation Jewellery House.</span>
-                                </div>
-                                <div class="btn-wrapper">
-                                    <a href="order-details.php" class="theme-btn-1 btn btn-effect-1">View Order Details</a>
+                                <?php 
+                                    $user_id = $_SESSION['user_id'];
+                                    $order = "created_at DESC";
+                                    $ordersql = $imitation->get('order_master', '*', NULL, NULL, $order);
+                                    
+                                    if (count($ordersql) >= 1) {
+                                        foreach ($ordersql as $key => $val) { 
+                                            $mtClass = ($key == 1) ? 'mt-4' : '';
+
+                                            ?>
+                                            <div class="card <?php echo $mtClass; ?>" style="background-color: black; border: 1px solid gold;">
+                                                <div class="card-body">
+                                                    <div class="product-info">
+                                                        <div class="product-image">
+                                                            <h4>OrderId : #0000<?php echo $val['id']; ?></h4>
+                                                            <h4>Total : ₹ <?php echo $val['total']; ?>.00</h4>
+                                                            <h4>Payment Type : <?php echo $val['payment_method']; ?></h4>
+                                                            <h4>Order Date : <?php echo date("d M Y", strtotime($val['created_at'])); ?></h4>
+                                                        </div>
+                                                        <a href="order-summery.php?orderId=<?php echo base64_encode($val['id']); ?>" style="position: absolute; top: 10px; right: 10px;">View Details</a>
+                                                    </div>
+                                                </div>
+                                            </div>
+
+                                    <?php  
+                                        }
+                                    } else { ?>
+                                    <div class="col-md-12">
+                                        <span>No Items</span>
+                                    </div>
+                                <?php } ?>
                                 </div>
                             </div>
                         </div>

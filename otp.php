@@ -6,6 +6,10 @@ include_once("email.php");
 $imitation = new imitation();
 $msg = "";
 
+if(!isset($_SESSION['otp'])) {
+    header("Location:login.php");
+}
+
 if(isset($_POST['submit'])) {
     $otp = $_POST['otp']; 
     if($otp == $_SESSION['otp']) {
@@ -20,7 +24,12 @@ if(isset($_POST['submit'])) {
             if($updateResult) {
                 unset($_SESSION['otp']);
                 $_SESSION['user_id'] = $userRes[0]['id'];
-                header("Location:index.php");
+                if(isset($_SESSION['page'])) {
+                    $page = $_SESSION['page'];
+                    header("Location:$page");
+                } else {
+                    header("Location:index.php");
+                }
             } else {
                 $msg = "<div class='alert alert-danger'>Something went wrong.</div>";    
             }
@@ -105,7 +114,8 @@ if(isset($_POST['type'])) {
                         <form name="otpFrm" method="POST" id="otpFrm" class="ltn__form-box contact-form-box">
                             <?php echo $msg; ?>
                             <input type="text" name="otp" id="otp" placeholder="OTP*" inputmode="numeric" maxlength="6">
-                            <div class="btn-wrapper mt-0">
+                            <label style="color:red;">* OTP has send on your register email address.</label>
+                            <div class="btn-wrapper mt-2">
                                 <button class="theme-btn-1 btn btn-block" type="submit" name="submit">Verify</button>
                             </div>
                             <div class="go-to-btn mt-20">

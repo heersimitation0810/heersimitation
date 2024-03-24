@@ -6,6 +6,10 @@ include_once("email.php");
 $imitation = new imitation();
 $msg = "";
 
+if(isset($_SESSION['user_id']) && isset($_SESSION['email'])) {
+    header("Location:index.php");
+}
+
 if(isset($_POST['submit'])) { 
     $email = $_POST['email'];
     $password = base64_encode($_POST['password']);
