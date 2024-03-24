@@ -74,7 +74,10 @@ if(isset($_POST['type'])) {
         $checkPro = $imitation->get('tmp_cart', '*', NULL, $con);
 
         if(count($checkPro) >= 1) {
-            $array = array("qty" => $_POST['qty']);
+            $array = array(
+                "qty"       => isset($_POST['qty']) ? $_POST['qty'] : null,
+                "pro_image" => isset($_POST['proImg']) ? $_POST['proImg'] : null,
+            );
             $updateResult = $imitation->update("tmp_cart", $array, $con);
             
             $userCon = array('user_id' => $user_id);
@@ -88,9 +91,10 @@ if(isset($_POST['type'])) {
             exit;
         } else {
             $array = array(
-                "user_id" => $user_id, 
-                "pro_id"  => isset($_POST['proId']) ? $_POST['proId'] : null,
-                "qty"     => isset($_POST['qty']) ? $_POST['qty'] : null,
+                "user_id"   => $user_id, 
+                "pro_id"    => isset($_POST['proId']) ? $_POST['proId'] : null,
+                "qty"       => isset($_POST['qty']) ? $_POST['qty'] : null,
+                "pro_image" => isset($_POST['proImg']) ? $_POST['proImg'] : null,
             ); 
             $result = $imitation->insert("tmp_cart", $array);
     
@@ -301,6 +305,7 @@ if(isset($_POST['type'])) {
                                                     <input type="text" value="1" min="1" name="qtybutton" class="cart-plus-minus-box" id="qty">
                                                     <div class="inc qtybutton">+</div>
                                                 </div>
+                                                <span class="qty-error" style="color:red; display:none;">Please add quantity</span>
                                             </li>
                                         </ul>
                                     </div>
@@ -325,7 +330,7 @@ if(isset($_POST['type'])) {
                                             <li>
                                                 <a title="Wishlist" class="wishlist" data-proid="<?php echo $product[0]['id']; ?>">
                                                     <i class="far fa-heart"></i>
-                                                    <span>Add to Wishlist</span>
+                                                    <span style="cursor: pointer;">Add to Wishlist</span>
                                                 </a>
                                             </li>
                                         </ul>
@@ -776,49 +781,69 @@ if(isset($_POST['type'])) {
 
     $(document).on('click', '.addProduct', function() {
         var id = "<?php echo $_GET['id']; ?>";
-        if(user_id == '') {
-            window.location.href = 'login.php';
+        var qty = $('#qty').val();
+        var current_img = $('#productImg').attr("src");
+        var extractedValue = current_img.split("product/")[1];
+
+        if(qty >= 1) { 
+            $('.qty-error').css('display', 'none');
+            if(user_id == '') {
+                window.location.href = 'login.php';
+            } else {
+                var proid = $(this).data("proid");
+                var qty = $('#qty').val();
+                $.ajax({
+                    url: 'product-details.php?id=' + id,
+                    method: 'POST',
+                    dataType: 'json',
+                    data: {
+                        type: "addCart",
+                        proId: proid,
+                        qty: qty,
+                        proImg: extractedValue
+                    },
+                    success: function(response){
+                        $('#add_to_cart_modal').modal('show');
+                        $('.totalPro').text(response.totalProduct);
+                    }
+                });
+            }
         } else {
-            var proid = $(this).data("proid");
-            var qty = $('#qty').val();
-            $.ajax({
-                url: 'product-details.php?id=' + id,
-                method: 'POST',
-                dataType: 'json',
-                data: {
-                    type: "addCart",
-                    proId: proid,
-                    qty: qty
-                },
-                success: function(response){
-                    $('#add_to_cart_modal').modal('show');
-                    $('.totalPro').text(response.totalProduct);
-                }
-            });
+            $('.qty-error').css('display', '');
         }
     });
 
     $(document).on('click', '#buynow', function() {
         var id = "<?php echo $_GET['id']; ?>";
-        if(user_id == '') {
-            window.location.href = 'login.php';
+        var qty = $('#qty').val();
+        var current_img = $('#productImg').attr("src");
+        var extractedValue = current_img.split("product/")[1];
+        
+        if(qty >= 1) {
+            $('.qty-error').css('display', 'none');
+            if(user_id == '') {
+                window.location.href = 'login.php';
+            } else {
+                var proid = $(this).data("proid");
+                var qty = $('#qty').val();
+                $.ajax({
+                    url: 'product-details.php?id=' + id,
+                    method: 'POST',
+                    dataType: 'json',
+                    data: {
+                        type: "addCart",
+                        proId: proid,
+                        qty: qty,
+                        proImg: extractedValue
+                    },
+                    success: function(response){
+                        $('.totalPro').text(response.totalProduct);
+                        window.location.href = 'checkout.php';
+                    }
+                });
+            }
         } else {
-            var proid = $(this).data("proid");
-            var qty = $('#qty').val();
-            $.ajax({
-                url: 'product-details.php?id=' + id,
-                method: 'POST',
-                dataType: 'json',
-                data: {
-                    type: "addCart",
-                    proId: proid,
-                    qty: qty
-                },
-                success: function(response){
-                    $('.totalPro').text(response.totalProduct);
-                    window.location.href = 'checkout.php';
-                }
-            });
+            $('.qty-error').css('display', '');
         }
     });
 

@@ -90,61 +90,13 @@ if(isset($_POST['type'])) {
                     <div class="shoping-cart-inner">
                         <div class="shoping-cart-table table-responsive">
                             <div class="ltn__checkout-single-content-info mt-20">
-                                <h3>Cart Details</h3>
                                 <div class="row" id="showCart">
-                                <?php 
-                                    $user_id = $_SESSION['user_id'];
-                                    $select ="tmp_cart.pro_image, tmp_cart.qty, product.id, product.name, product.primary_img, product.h_price, tmp_cart.id as tmpid";
-                                    $joins = "LEFT JOIN tmp_cart ON tmp_cart.pro_id = product.id
-                                                WHERE tmp_cart.user_id='$user_id'
-                                                GROUP BY product.id
-                                                ORDER BY tmp_cart.created_at DESC ";
-                                    $product = $imitation->get('product', $select, $joins);
-                                    
-                                    if (count($product) >= 1) {
-                                        foreach ($product as $key => $val) { 
-                                            // Check if it's the first iteration, if so, add mt-4 class
-                                            $mtClass = ($key == 1) ? 'mt-4' : '';
-
-                                            ?>
-                                            <div class="card <?php echo $mtClass; ?>" style="background-color: black; border: 1px solid gold;">
-                                                <div class="card-body">
-                                                    <div class="product-info">
-                                                        <div class="product-image">
-                                                            <img src="img/product/<?php echo $val['pro_image']; ?>" alt="" style="height:100px; width:100px;">
-                                                        </div>
-                                                        <div class="product-details">
-                                                            <h4><?php echo $val['name']; ?></h4>
-                                                            <h4>₹ <?php echo $val['h_price']; ?>.00</h4>
-                                                            <div class="cart-plus-minus">
-                                                                <div class="dec qtybutton" data-tmpid="<?php echo $val['tmpid']; ?>">-</div>
-                                                                <input type="text" min="1" value="<?php echo $val['qty']; ?>" name="qtybutton" class="cart-plus-minus-box" data-tmpid="<?php echo $val['tmpid']; ?>" id="qty_<?php echo $val['tmpid']; ?>">
-                                                                <div class="inc qtybutton" data-tmpid="<?php echo $val['tmpid']; ?>">+</div>
-                                                            </div>
-                                                        </div>
-                                                        <a class="remove-cart" data-tmpid="<?php echo $val['tmpid']; ?>" style="position: absolute; top: 0px; right: 10px;"><i class="icon-cancel"></i></a>
-                                                    </div>
-                                                </div>
-                                            </div>
-
-                                    <?php  
-                                        }
-                                    } else { ?>
-                                    <div class="col-md-12">
-                                        <span>No Items</span>
-                                    </div>
-                                <?php } ?>
+                                    <h4><i class="fa fa-check-circle" style="color:green;"></i> Your order uccessfully placed.</h4>
+                                    <span>Thank you for purchase in Heers Imitation Jewellery House.</span>
                                 </div>
-                                <?php 
-                                    if(count($product) >= 1) { ?>
-                                    <div class="row mt-20">
-                                        <div class="col-md-12">
-                                            <a href="checkout.php" class="btn theme-btn-1 btn-effect-1">Checkout</a>
-                                        </div>
-                                    </div>
-                                <?php 
-                                    }
-                                ?>
+                                <div class="btn-wrapper">
+                                    <a href="" class="theme-btn-1 btn btn-effect-1">View Order Details</a>
+                                </div>
                             </div>
                         </div>
                     </div>

@@ -1,6 +1,7 @@
 <?php 
 session_start();
 include_once("config.php");
+include_once("email.php");
 $imitation = new imitation();
 
 if(!isset($_SESSION['user_id']) && !isset($_SESSION['email'])) {
@@ -11,6 +12,103 @@ if(!isset($_SESSION['user_id']) && !isset($_SESSION['email'])) {
 if(isset($_SESSION['user_id']) && isset($_SESSION['email'])) {
     $condition = array('id' => $_SESSION['user_id']);
     $userData = $imitation->get('users', '*', NULL, $condition);
+}
+
+if(isset($_POST['type'])) {
+    if($_POST['type'] == 'payment') {
+        if(isset($_POST['payment_id'])) {
+            $user_id = $_SESSION['user_id'];
+            $paymentId = $_POST['payment_id']; 
+            $tmp_con = array('user_id' => $user_id);
+            $tmp_order = $imitation->get('tmp_cart', '*', NULL, $tmp_con);
+
+            if(count($tmp_order) >= 1) {
+                $total = 0;
+                $select ="tmp_cart.pro_id, tmp_cart.pro_image, tmp_cart.qty, product.id, product.name, product.primary_img, product.h_price";
+                $joins = "LEFT JOIN tmp_cart ON tmp_cart.pro_id = product.id
+                            WHERE tmp_cart.user_id='$user_id'
+                            GROUP BY product.id
+                            ORDER BY tmp_cart.created_at DESC ";
+                $product = $imitation->get('product', $select, $joins);
+        
+                if(count($product) >= 1) {
+                    foreach($product as $k => $v) { 
+                        $tmp = 0;
+                        $tmp = $v['qty'] * $v['h_price'];
+                        $total += $tmp;
+                    }
+                }
+
+                $addressCon = array('user_id' => $user_id, 'default_status' => '1');
+                $addressData = $imitation->get('address', '*', NULL, $addressCon);
+
+                $order_array = array(
+                    'user_id'        => $user_id,
+                    'address'        => $addressData[0]['id'],
+                    'total'          => $total,
+                    'payment_method' => 'Online',
+                    'payment_id'     => $paymentId,
+                    'created_at'     => date("Y-m-d H:i:s")
+                );
+                $orderResult = $imitation->insert('order_master', $order_array);
+
+                if($orderResult) {
+                    $order = "id DESC";
+                    $limit = "1";
+                    $ordersql = $imitation->get('order_master', '*', NULL, NULL, $order, $limit);
+                    $orderId = $ordersql[0]['id'];
+                }
+
+                if(count($product) >= 1) {
+                    foreach($product as $key => $val) {
+                        $tmp = 0;
+                        $tmp = $val['qty'] * $val['h_price'];
+                        $order = array(
+                            "order_id"   => $orderId,
+                            "pro_id"     => $val['pro_id'],
+                            "qty"        => $val['qty'],
+                            "price"      => $tmp,
+                            "pro_image"  => $val['pro_image'],
+                            "created_at" => date("Y-m-d H:i:s")
+                          );
+                  
+                          $orderDetailsResult = $imitation->insert("order_details", $order);
+                    }
+                }
+
+                $name = $userData[0]['first_name'] . ' ' . $userData[0]['last_name'];
+                $email = $userData[0]['email'];
+                $subject = 'Order Confirm #0000' . $orderId; 
+                $orderDate = date("Y-m-d H:i:s");
+                $html = "Dear $name, <br><br>
+                    Thank you for shopping with us! We're excited to confirm that your order has been successfully placed. Below, you'll find the details of your purchase:
+                    <br><br>
+                    Order Number: #0000$orderId
+                    <br>
+                    Order Date: $orderDate
+                    <br>
+                    Total Amount: $total
+                    <br><br>
+                    We are currently processing your order.
+                    <br><br>
+                    Thank you again for choosing to shop with us!
+                    <br><br>
+                    Best regards, <br>
+                    <b>Heer's Imitation Jewellery House</b>
+                    <br><br>
+                    <img src='cid:logo' alt='Company Logo' style='height:80%; width:80%;'>";
+
+                if(smtp_mailer($email, $subject, $html)) {
+                    $tmpCon = array('user_id' => $user_id);
+                    $tmpOrderRemove = $imitation->delete('tmp_cart', $tmpCon);
+                    echo 'success';
+                } else {
+                    echo 'failed';
+                } 
+                exit;
+            }
+        }
+    }
 }
 
 ?>
@@ -157,6 +255,7 @@ if(isset($_SESSION['user_id']) && isset($_SESSION['email'])) {
                                                         </label>
                                                     </div>
                                                     <a href="edit-address.php?id=<?php echo base64_encode($val['id']); ?>" style="position: absolute; top: 0px; right: 10px;">Edit</a>
+                                                    <span style="position: absolute; top: 2px; left: 4px;"><i class="icon-cancel"></i></span>
                                                 </div>
                                             </div>
                                     <?php  
@@ -174,7 +273,7 @@ if(isset($_SESSION['user_id']) && isset($_SESSION['email'])) {
                                         <a href="add-address.php" class="btn theme-btn-1 btn-effect-1">Add New Address</a>
                                     </div>
                                 </div>
-                                <span id="shipping-error" style="display:none;">Please add shipping addresss</span>
+                                <span id="shipping-error" style="display:none;color:red;">Please add shipping addresss</span>
                             </div>
                         </div>
                     </div>
@@ -247,6 +346,7 @@ if(isset($_SESSION['user_id']) && isset($_SESSION['email'])) {
 <script src="js/plugins.js"></script>
 <!-- Main JS -->
 <script src="js/main.js"></script>
+<script src="https://cdnjs.cloudflare.com/ajax/libs/sweetalert/2.1.2/sweetalert.min.js"></script>
 <script src="https://checkout.razorpay.com/v1/checkout.js"></script>
 
 <script>
@@ -255,6 +355,7 @@ if(isset($_SESSION['user_id']) && isset($_SESSION['email'])) {
         if(addressCount >= 1) {
             $('#shipping-error').css('display', 'none');
             var amt = "<?php echo $total; ?>";
+            $('#submit').prop('disabled', true);
             var options = {
                     "key": "rzp_test_eh4xkcqTW9H6ka",
                     "amount": amt * 100,
@@ -264,8 +365,11 @@ if(isset($_SESSION['user_id']) && isset($_SESSION['email'])) {
                     "color": "black",
                     "image": "logo.png",
                     "handler": function(response) {
-                        // $("#paymentId").val(response.razorpay_payment_id);
-                        // getResponse();
+                        if(response.razorpay_payment_id) {
+                            getResponse(response.razorpay_payment_id);
+                        } else {
+
+                        }
                     },
                     "theme": {
                         "color": "black"
@@ -280,6 +384,38 @@ if(isset($_SESSION['user_id']) && isset($_SESSION['email'])) {
             }, 100);
         }
     });
+
+    function getResponse(paymentId) {
+        $.ajax({
+                type: 'post',
+                url: 'checkout.php',
+                data: {
+                    type: 'payment',
+                    payment_id: paymentId
+                },
+                success: function(result) {
+                    console.log(result);
+                    if(result == 'success') {
+                        setTimeout(function() {
+                            swal({
+                                title: 'Success',
+                                text: 'Your Order Has Been Successful Confirm',
+                                icon: 'success',
+                            })
+                        }, 1000);
+                        window.setTimeout(function() {
+                            window.location.href = 'success.php';
+                        }, 5000);
+                    } else {
+                        swal({
+                            title: 'Something Went Wrong !!!!',
+                            text: 'OOPS, Something Went Wrong !!!!',
+                            icon: 'error',
+                        })
+                    }
+                }
+        });
+    }
 </script>
 </body>
 
