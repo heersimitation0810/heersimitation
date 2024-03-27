@@ -2,35 +2,6 @@
 session_start();
 include_once("config.php");
 $imitation = new imitation();
-
-if(isset($_POST['type'])) {
-    $user_id = isset($_SESSION['user_id']) ? $_SESSION['user_id'] : '';
-    if($_POST['type'] == 'tmpUpdate') {
-        $con = array('id' => $_POST['tmpId']);
-        $checkPro = $imitation->get('tmp_cart', '*', NULL, $con);
-
-        if(count($checkPro) >= 1) {
-            $array = array("qty" => $_POST['qty']);
-            $updateResult = $imitation->update("tmp_cart", $array, $con);
-            echo 'update';
-            exit;
-        } 
-    }
-
-    if($_POST['type'] == 'remove') {
-        $html = '';
-        $proCon = array("id" => $_POST['tmpId']);
-        $deletePro = $imitation->delete("tmp_cart", $proCon);
-
-        if($deletePro) {
-            echo 'success';
-        } else {
-            echo 'faild';
-        }
-        exit;
-    }
-}
-
 ?>
 <!doctype html>
 <html class="no-js" lang="zxx">
@@ -139,8 +110,11 @@ if(isset($_POST['type'])) {
                             <div class="row mt-4" id="showCart">
                                 <h2>Total ₹ <?php echo $address[0]['total']; ?>.00</h2>
                             </div>
-                            <div class="row mt-4" id="showCart">
-                                <h3>Delivery On <?php echo date('d M Y', strtotime($address[0]['orderDate']. ' + 5 days'));?></h3>
+                            <div class="row mt-4">
+                            <a href="invoice.php?id=<?php echo $_GET['orderId']; ?>" class="theme-btn-1 btn btn-effect-1 downloadInvoice" title="Add to Cart" data-proid="1">
+                                <i class="fas fa-arrow-down"></i>
+                                <span>Download Invoice</span>
+                            </a>
                             </div>
                         </div>
                     </div>
@@ -164,92 +138,6 @@ if(isset($_POST['type'])) {
     <script src="js/plugins.js"></script>
     <!-- Main JS -->
     <script src="js/main.js"></script>
-<script>
-    $(document).ready(function(){
-        $('.inc').click(function(){
-            var tmp_id = $(this).data('tmpid');
-            var qtyInput = $('#qty_' + tmp_id);
-            var qty = parseInt(qtyInput.val());
-            qtyInput.val(qty);
-
-            $.ajax({
-                url: 'cart.php',
-                method: 'POST',
-                data: {
-                    type: "tmpUpdate",
-                    tmpId: tmp_id,
-                    qty: qty
-                },
-                success: function(response){
-                    console.log(response);
-                    // $('.product-detail').html(response);
-                }
-            });
-        });
-
-        // Minus button click event
-        $('.dec').click(function(){
-            var tmp_id = $(this).data('tmpid');
-            var qtyInput = $('#qty_' + tmp_id);
-            var qty = parseInt(qtyInput.val());
-            if(qty > 1) {
-                qtyInput.val(qty);
-                $.ajax({
-                    url: 'cart.php',
-                    method: 'POST',
-                    data: {
-                        type: "tmpUpdate",
-                        tmpId: tmp_id,
-                        qty: qty
-                    },
-                    success: function(response){
-                        console.log(response);
-                        // $('.product-detail').html(response);
-                    }
-                });
-            }
-        });
-
-        $('.cart-plus-minus-box').on('input', function(){
-            var tmp_id = $(this).data('tmpid');
-            var qty = parseInt($(this).val());
-
-            if(qty >= 1) {
-                $.ajax({
-                    url: 'cart.php',
-                    method: 'POST',
-                    data: {
-                        type: "tmpUpdate",
-                        tmpId: tmp_id,
-                        qty: qty
-                    },
-                    success: function(response){
-                        console.log(response);
-                        // $('.product-detail').html(response);
-                    }
-                });
-            }
-        });
-
-        $(document).on('click', '.remove-cart', function() {
-            var tmp_id = $(this).data('tmpid');
-            $.ajax({
-                url: 'cart.php',
-                method: 'POST',
-                data: {
-                    type: "remove",
-                    tmpId: tmp_id,
-                },
-                success: function(response){
-                    if(response == 'success') {
-                        window.location.reload();
-                    }
-                }
-            });
-        });
-    });
-
-</script>
 </body>
 
 <!-- Mirrored from tunatheme.com/tf/html/broccoli-preview/broccoli/cart.html by HTTrack Website Copier/3.x [XR&CO'2014], Sat, 02 Mar 2024 06:20:16 GMT -->
