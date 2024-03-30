@@ -2,6 +2,10 @@
 session_start();
 include_once("config.php");
 include_once("email.php");
+require_once 'vendor/autoload.php'; 
+
+use Dompdf\Dompdf;
+use Dompdf\Options;
 $imitation = new imitation();
 
 if(!isset($_SESSION['user_id']) && !isset($_SESSION['email'])) {
@@ -12,6 +16,35 @@ if(!isset($_SESSION['user_id']) && !isset($_SESSION['email'])) {
 if(isset($_SESSION['user_id']) && isset($_SESSION['email'])) {
     $condition = array('id' => $_SESSION['user_id']);
     $userData = $imitation->get('users', '*', NULL, $condition);
+}
+
+function sendInvoic($orderId) {
+    ob_start();
+    include_once 'inv.php';
+    $html = ob_get_clean();
+
+    $options = new Options();
+    $options->setChroot(__DIR__);
+    $dompdf = new Dompdf($options);
+    $dompdf->loadHtml($html);
+    $dompdf->render();
+    $pdf_content = $dompdf->output();
+
+    $file_path = 'pdf/#0000' . $orderId . '_invoice.pdf';
+    file_put_contents($file_path, $pdf_content);
+
+    $orderDate = date("Y-m-d H:i:s");
+    $sub = "New Order #0000" . $orderId;
+    $msg = "Order Number: #0000$orderId
+            <br>
+            Order Date: $orderDate
+            <br><br>
+            Best regards, <br>
+            <b>Heer Imitation Jewellery House</b>
+            <br><br>
+            <img src='cid:logo' alt='Company Logo' style='height:80%; width:80%;'>";
+            
+    sendMail('mitulsoni1311@gmail.com', $sub, $msg, $file_path);
 }
 
 if(isset($_POST['type'])) {
@@ -97,7 +130,9 @@ if(isset($_POST['type'])) {
                     <b>Heer's Imitation Jewellery House</b>
                     <br><br>
                     <img src='cid:logo' alt='Company Logo' style='height:80%; width:80%;'>";
-
+                
+                sendInvoic($orderId);
+                
                 if(smtp_mailer($email, $subject, $html)) {
                     $tmpCon = array('user_id' => $user_id);
                     $tmpOrderRemove = $imitation->delete('tmp_cart', $tmpCon);
@@ -121,7 +156,61 @@ if(isset($_POST['type'])) {
 <head>
     <?php include_once('links.php'); ?>
 </head>
+<style>
+.overlay {
+  position: fixed;
+  top: 0;
+  left: 0;
+  width: 100%;
+  height: 100%;
+  background-color: rgba(0, 0, 0, 0.5); /* Adjust the alpha value for the desired level of blur */
+  z-index: 9999; /* Ensures the loader is at the top layer */
+}
 
+.mesh-loader {
+  position: absolute;
+  top: 50%;
+  left: 50%;
+  transform: translate(-50%, -50%);
+}
+
+.mesh-loader .circle {
+  width: 30px;
+  height: 30px;
+  position: absolute;
+  background: goldenrod;
+  border-radius: 50%;
+  margin: -15px;
+  animation: mesh 3s ease-in-out infinite -1.5s;
+}
+
+.mesh-loader > div .circle:last-child {
+  animation-delay: 0s;
+}
+
+.mesh-loader > div:last-child {
+  transform: rotate(90deg);
+}
+
+@keyframes mesh {
+  0% {
+    transform-origin: 50% -100%;
+    transform: rotate(0);
+  }
+  50% {
+    transform-origin: 50% -100%;
+    transform: rotate(360deg);
+  }
+  50.1% {
+    transform-origin: 50% 200%;
+    transform: rotate(0deg);
+  }
+  100% {
+    transform-origin: 50% 200%;
+    transform: rotate(360deg);
+  }
+}
+</style>
 <body>
     <!--[if lte IE 9]>
         <p class="browserupgrade">You are using an <strong>outdated</strong> browser. Please <a href="https://browsehappy.com/">upgrade your browser</a> to improve your experience and security.</p>
@@ -131,7 +220,18 @@ if(isset($_POST['type'])) {
 
 <!-- Body main wrapper start -->
 <div class="body-wrapper">
-
+    <div class="overlay" id="loader" style="display:none;">
+        <div class="mesh-loader">
+            <div class="set-one">
+                <div class="circle"></div>
+                <div class="circle"></div>
+            </div>
+            <div class="set-two">
+                <div class="circle"></div>
+                <div class="circle"></div>
+            </div>
+        </div>
+    </div>
     <!-- HEADER AREA START (header-5) -->
     <?php include_once('header.php'); ?>
     <!-- HEADER AREA END -->
@@ -356,7 +456,6 @@ if(isset($_POST['type'])) {
         if(addressCount >= 1) {
             $('#shipping-error').css('display', 'none');
             var amt = "<?php echo $total; ?>";
-            $('#submit').prop('disabled', true);
             var options = {
                     "key": "rzp_test_eh4xkcqTW9H6ka",
                     "amount": amt * 100,
@@ -387,6 +486,7 @@ if(isset($_POST['type'])) {
     });
 
     function getResponse(paymentId) {
+        $('#loader').css('display', '');
         $.ajax({
                 type: 'post',
                 url: 'checkout.php',
@@ -397,6 +497,7 @@ if(isset($_POST['type'])) {
                 success: function(result) {
                     console.log(result);
                     if(result == 'success') {
+                        $('#loader').css('display', 'none');
                         setTimeout(function() {
                             swal({
                                 title: 'Success',
@@ -417,6 +518,7 @@ if(isset($_POST['type'])) {
                 }
         });
     }
+
 </script>
 </body>
 

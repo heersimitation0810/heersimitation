@@ -94,7 +94,7 @@ if(isset($_POST['submit'])) {
             <div class="row">
                 <div class="col-lg-12">
                     <div class="section-title-area text-center">
-                        <h1 class="section-title">Sign In</h1>
+                        <h1 class="section-title">Log In</h1>
                     </div>
                 </div>
             </div>
@@ -112,10 +112,10 @@ if(isset($_POST['submit'])) {
                             <div class="go-to-btn mt-20">
                                 <div class="row">
                                     <div class="col-lg-6">
-                                        <a href="#"><small>Forgotten your password?</small></a>
+                                        <a href="register.php"><small>Create a new account ?</small></a>
                                     </div>
                                     <div class="col-lg-6">
-                                        <a href="register.php"><small>Create a new account ?</small></a>
+                                        <a href="forget-password.php"><small>Forgotten your password?</small></a>
                                     </div>
                                 </div>
                             </div>

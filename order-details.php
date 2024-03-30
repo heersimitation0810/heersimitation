@@ -95,7 +95,8 @@ if(isset($_POST['type'])) {
                                 <?php 
                                     $user_id = $_SESSION['user_id'];
                                     $order = "created_at DESC";
-                                    $ordersql = $imitation->get('order_master', '*', NULL, NULL, $order);
+                                    $con = array('user_id' => $user_id);
+                                    $ordersql = $imitation->get('order_master', '*', NULL, $con, $order);
                                     
                                     if (count($ordersql) >= 1) {
                                         foreach ($ordersql as $key => $val) { 

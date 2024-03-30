@@ -28,9 +28,13 @@ if(isset($_POST['submit'])) {
     $result = $imitation->update("address", $array, $con);
     
     if ($result == 1) {
-        header("Location:checkout.php");
+        if(isset($_GET['type']) && $_GET['type'] == 'edit') {
+            header("Location:address.php");
+        } else {
+            header("Location:checkout.php");
+        }
     } else {
-        $msg = '<div style="color:red;">Something Went Wrong !!</div>';
+        $msg = '<div class="alert alert-danger"><b>Something Went Wrong !!</b></div>';
     }
 
 }

@@ -212,7 +212,6 @@ if(isset($_POST['type'])) {
 <head>
     <?php include_once('links.php'); ?>
 </head>
-
 <body>
     <!--[if lte IE 9]>
         <p class="browserupgrade">You are using an <strong>outdated</strong> browser. Please <a href="https://browsehappy.com/">upgrade your browser</a> to improve your experience and security.</p>
@@ -255,25 +254,10 @@ if(isset($_POST['type'])) {
     <div class="ltn__utilize-overlay"></div>
 
     <!-- PRODUCT DETAILS AREA START -->
-    <div class="ltn__product-area ltn__product-gutter mb-120 mt-10">
+    <div class="ltn__product-area ltn__product-gutter mt-10">
         <div class="container">
             <div class="row">
-                <div class="col-lg-8">
-                    <div class="ltn__shop-options">
-                        <ul>
-                            <li>
-                               <div class="short-by text-center">
-                                    <select class="nice-select">
-                                        <option>Default Sorting</option>
-                                        <option>Sort by popularity</option>
-                                        <option>Sort by new arrivals</option>
-                                        <option>Sort by price: low to high</option>
-                                        <option>Sort by price: high to low</option>
-                                    </select>
-                                </div> 
-                            </li>
-                        </ul>
-                    </div>
+                <div class="col-lg-12">
                     <div class="tab-content">
                         <div class="tab-pane fade active show" id="liton_product_grid">
                             <div class="ltn__product-tab-content-inner ltn__product-grid-view">
@@ -281,19 +265,20 @@ if(isset($_POST['type'])) {
                                     <!-- ltn__product-item -->
                                     <?php 
                                         $catId = $_GET['catid'];
-                                        $items_per_page = 10;
+                                        $items_per_page = 20;
                                         $current_page = isset($_GET['page']) ? $_GET['page'] : 1;
                                         $offset = ($current_page - 1) * $items_per_page;
                                         $condition = array('cat_id' => $catId);
-                                        // $earrings = $imitation->get('product', '*', NULL, $condition, "LIMIT $offset, $items_per_page");
+                                        $orderBy = "id LIMIT $offset, $items_per_page";
+                                        
                                         $total_records = count($imitation->get('product', 'id', NULL, $condition));
                                         $total_pages = ceil($total_records / $items_per_page);
 
                                         $condition = array('cat_id' => $catId);
-                                        $earrings = $imitation->get('product', '*', NULL, $condition);
+                                        $earrings = $imitation->get('product', '*', NULL, $condition, $orderBy);
 
                                         foreach($earrings as $key => $val) { ?>
-                                            <div class="col-xl-4 col-sm-6 col-6">
+                                            <div class="col-xl-3 col-lg-4 col-sm-6 col-6">
                                                 <div class="ltn__product-item ltn__product-item-3 text-center">
                                                     <div class="product-img">
                                                         <a href="product-details.php?id=<?php echo base64_encode($val['id']); ?>">
@@ -319,13 +304,13 @@ if(isset($_POST['type'])) {
                     <div class="ltn__pagination-area text-center">
                         <div class="ltn__pagination">
                             <ul>
-                                <li><a href="?page=<?php echo ($current_page > 1) ? $current_page - 1 : 1; ?>"><i class="fas fa-angle-double-left"></i></a></li>
+                                <li><a href="?catid=<?php echo $_GET['catid']?>&page=<?php echo ($current_page > 1) ? $current_page - 1 : 1; ?>"><i class="fas fa-angle-double-left"></i></a></li>
                                 <?php for($i = 1; $i <= $total_pages; $i++) { ?>
                                     <li <?php if($i == $current_page) echo 'class="active"'; ?>>
                                         <a href="?page=<?php echo $i; ?>"><?php echo $i; ?></a>
                                     </li>
                                 <?php } ?>
-                                <li><a href="?page=<?php echo ($current_page < $total_pages) ? $current_page + 1 : $total_pages; ?>"><i class="fas fa-angle-double-right"></i></a></li>
+                                <li><a href="?catid=<?php echo $_GET['catid']?>&page=<?php echo ($current_page < $total_pages) ? $current_page + 1 : $total_pages; ?>"><i class="fas fa-angle-double-right"></i></a></li>
                             </ul>
                         </div>
                     </div>

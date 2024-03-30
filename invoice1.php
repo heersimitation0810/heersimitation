@@ -1,20 +1,24 @@
 <?php
+include_once("config.php");
+$imitation = new imitation();
+$msg = "";
 
-    include_once("config.php");
-    $imitation = new imitation();
-    $msg = "";
+if(!isset($_SESSION['user_id']) && !isset($_SESSION['email'])) {
+    header("Location:index.php");
+}
 
-    $orderid = base64_decode($id);
-    $select = "order_master.id as orderID, order_master.created_at as orderDate, 
-               users.first_name, users.last_name, users.email, users.contact, 
-               address_line1, address_line2, state, city, country, zipcode";
-    $joins = "LEFT JOIN 
-                users ON users.id = order_master.user_id
-            LEFT JOIN
-                address ON address.user_id = users.id
-            WHERE 
-                order_master.id = $orderid AND address.default_status = 1";
-    $userDet = $imitation->get('order_master', $select, $joins);
+$user_id = $_SESSION['user_id'];
+$orderid = base64_decode($id);
+$select = "order_master.id as orderID, order_master.created_at as orderDate, 
+            users.first_name, users.last_name, users.email, users.contact, 
+            address_line1, address_line2, state, city, country, zipcode";
+$joins = "LEFT JOIN 
+            users ON users.id = order_master.user_id
+        LEFT JOIN
+            address ON address.user_id = users.id
+        WHERE 
+            order_master.id = $orderid AND address.default_status = 1";
+$userDet = $imitation->get('order_master', $select, $joins);
 ?>
 <!DOCTYPE html>
 <html>
@@ -25,8 +29,6 @@
     <div style="text-align:center;">
         <img src="logo.png" alt="" style="height:120px;width:250px;">
     </div>
-    <h1 style="font-family: Arial, sans-serif; text-align:center;">Heers Imitation Jewellery House</h1>
-    <p style="font-family: Arial, sans-serif; text-align:center; margin-top:-20px;">Ahmedabad, Gujarat, India. </p>
     <h3 style="font-family: Arial, sans-serif; text-align:center;">Invoice</h3>
     <table style="width: 100%;">
     <tr>
@@ -48,6 +50,7 @@
         <th style="text-align: left; padding: 8px;">Item Description</th>
         <th style="text-align: left; padding: 8px;">Item Image</th>
         <th style="text-align: right; padding: 8px;">Qty</th>
+        <th style="text-align: right; padding: 8px;">Price</th>
         <th style="text-align: right; padding: 8px;">Total</th>
       </tr>
     </thead>
@@ -59,6 +62,7 @@
             order_master.total as total,
             order_master.created_at as order_date,
             product.id as product_id,
+            product.h_price as hprice,
             product.name as product_name,
             order_details.pro_image as product_image";
         $joins = "LEFT JOIN 
@@ -78,6 +82,7 @@
         <td style="text-align: left; padding: 8px;"><?php echo $val['product_name']; ?></td>
         <td style="text-align: left; padding: 8px;"><img src="img/product/<?php echo $val['product_image']?>" alt="" style="height:50px;width:50px;"></td>
         <td style="text-align: right; padding: 8px;"><?php echo $val['order_qty']; ?></td>
+        <td style="text-align: right; padding: 8px;"><?php echo $val['hprice']; ?></td>
         <td style="text-align: right; padding: 8px;"><?php echo $val['price']; ?></td>
       </tr>
     <?php } ?>
@@ -86,10 +91,12 @@
         <td></td>
         <td></td>
         <td></td>
+        <td></td>
         <td style="text-align:right;"><b>Sub Total</b></td>
         <td style="text-align: right; padding: 8px;"><?php echo $product[0]['total']; ?></td>
       </tr>
       <tr style="border:1px solid black;">
+        <td></td>
         <td></td>
         <td></td>
         <td></td>
