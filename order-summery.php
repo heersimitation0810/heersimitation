@@ -67,7 +67,7 @@ $imitation = new imitation();
                                     <?php 
                                         $user_id = $_SESSION['user_id'];
                                         $orderId = base64_decode($_GET['orderId']);
-                                        $select ="order_master.id, order_master.payment_method, order_details.qty, order_details.price, order_details.pro_image, product.name";
+                                        $select ="order_master.id, product.h_price, order_master.payment_method, order_details.qty, order_details.price, order_details.pro_image, product.name";
                                         $joins = "LEFT JOIN order_details ON order_master.id = order_details.order_id
                                                 LEFT JOIN product ON order_details.pro_id = product.id
                                                     WHERE order_master.user_id='$user_id' AND
@@ -87,7 +87,7 @@ $imitation = new imitation();
                                                             </div>
                                                             <div class="product-details">
                                                                 <h4><?php echo $val['name']; ?></h4>
-                                                                <h4>₹ <?php echo $val['price']; ?> X <?php echo $val['qty']; ?> = ₹ <?php echo $val['price'] * $val['qty']; ?></h4>
+                                                                <h4>₹ <?php echo $val['h_price']; ?> X <?php echo $val['qty']; ?> = ₹ <?php echo $val['h_price'] * $val['qty']; ?></h4>
                                                             </div>
                                                         </div>
                                                     </div>
