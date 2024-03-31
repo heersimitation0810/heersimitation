@@ -269,7 +269,7 @@ if(isset($_POST['type'])) {
                                         $current_page = isset($_GET['page']) ? $_GET['page'] : 1;
                                         $offset = ($current_page - 1) * $items_per_page;
                                         $condition = array('cat_id' => $catId);
-                                        $orderBy = "id LIMIT $offset, $items_per_page";
+                                        $orderBy = "id DESC LIMIT $offset, $items_per_page";
                                         
                                         $total_records = count($imitation->get('product', 'id', NULL, $condition));
                                         $total_pages = ceil($total_records / $items_per_page);
