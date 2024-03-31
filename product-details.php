@@ -171,6 +171,7 @@ if(isset($_POST['type'])) {
                         <div class="col-lg-6 col-12">
                             <div class="modal-product-info">
                                 <h3>'. $result[0]['name'] .'</h3>
+                                <span>P.'. $result[0]['code'] .'</span>
                                 <div class="product-price">
                                     <span>₹ ' . $result[0]['h_price'] . '.00</span>
                                     <del>₹ '. round($result[0]['h_price'] + $price) .'.00</del>
@@ -285,6 +286,7 @@ if(isset($_POST['type'])) {
                             <div class="col-md-6">
                                 <div class="modal-product-info shop-details-info pl-0">
                                     <h3><?php echo $product[0]['name']; ?></h3>
+                                    <span>P. <?php echo $product[0]['code']; ?></span>
                                     <div class="product-price">
                                         <span>₹ <?php echo $product[0]['h_price']; ?>.00</span>
                                         <del>₹ <?php $price = $product[0]['h_price'] * 10 /100; echo round($product[0]['h_price'] + $price); ?>.00</del>
