@@ -17,7 +17,8 @@ if(isset($_SESSION['user_id']) && isset($_SESSION['email'])) {
     $condition = array('id' => $_SESSION['user_id']);
     $userData = $imitation->get('users', '*', NULL, $condition);
 
-    $tmpCartCount = $imitation->get('tmp_cart', '*', NULL, $condition);
+    $userCon = array('user_id' => $_SESSION['user_id']);
+    $tmpCartCount = $imitation->get('tmp_cart', '*', NULL, $userCon);
     if(count($tmpCartCount) == 0) {
         header("Location:index.php");
     }

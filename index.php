@@ -419,9 +419,11 @@ if(isset($_POST['type'])) {
                         <div class="tab-pane fade active show" id="liton_tab_3_1">
                             <div class="ltn__product-tab-content-inner">
                                 <div class="row ltn__tab-product-slider-one-active slick-arrow-1">
-                                    <?php 
+                                    <?php
+                                        $order = "id DESC";
+                                        $limit = "10";
                                         $condition = array('cat_id' => '1');
-                                        $earrings = $imitation->get('product', '*', NULL, $condition);
+                                        $earrings = $imitation->get('product', '*', NULL, $condition, $order, $limit);
 
                                         foreach($earrings as $key => $val) { ?>
                                             <div class="col-lg-12">

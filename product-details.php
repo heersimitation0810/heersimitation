@@ -182,7 +182,7 @@ if(isset($_POST['type'])) {
                         
                         if(count($proVarient) >= 1) {
                             foreach($proVarient as $k => $v) {
-                                $html .= '<div class="color-box" data-proimg="'. $v['id'] .'" style="background-color: '. $v['color'] .';border:1px solid white;"></div>';
+                                $html .= '<div class="color-box" data-proimg="'. $v['id'] .'" style="background-color: '. $v['color'] .';border:1px solid white; height:35px; width:35px;"></div>';
                             }
                         }
 
@@ -296,7 +296,7 @@ if(isset($_POST['type'])) {
                                             
                                             if(count($proVarient) >= 1) {
                                                 foreach($proVarient as $k => $v) { ?>
-                                                    <div class="color-box" data-proimg="<?php echo $v['id']; ?>" style="background-color:<?php echo $v['color']; ?>;border:1px solid white;height:50px; width:50px;"></div>
+                                                    <div class="color-box" data-proimg="<?php echo $v['id']; ?>" style="background-color:<?php echo $v['color']; ?>;border:1px solid white;height:35px; width:35px;"></div>
                                             <?php
                                                 }
                                             }

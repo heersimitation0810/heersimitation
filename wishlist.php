@@ -319,7 +319,7 @@ if(isset($_POST['type'])) {
                     <!-- ltn__product-item -->
                     <?php
                         $user_id = $_SESSION['user_id'];
-                        $select ="product.id, product.name, product.primary_img, product.h_price";
+                        $select ="product.id, product.code, product.name, product.primary_img, product.h_price";
                         $joins = "LEFT JOIN wishlist ON  wishlist.pro_id = product.id
                                     WHERE  wishlist.user_id='$user_id'
                                     GROUP BY product.id
@@ -329,14 +329,15 @@ if(isset($_POST['type'])) {
                         if(count($product) >= 1) {
                             foreach($product as $key => $val) { ?>
                             <div class="col-lg-3 col-md-4 col-sm-6 col-6">
-                                <div class="ltn__product-item ltn__product-item-3 text-left">
+                                <div class="ltn__product-item ltn__product-item-3 text-center">
                                     <div class="product-img">
-                                        <a href="product-details.html" style="display: flex; justify-content: center;">
+                                        <a href="product-details.php?id=<?php echo base64_encode($val['id']); ?>" style="display: flex; justify-content: center;">
                                             <img src="img/product/<?php echo $val['primary_img']; ?>" alt="#" style="margin-top:10px; height:200px; width:200px; object-fit: cover;">
                                         </a>
                                     </div>
                                     <div class="product-info">
-                                        <h2 class="product-title" style="text-align:center;"><a href="product-details.html"><?php echo $val['name']; ?></a></h2>
+                                        <h2 class="product-title" style="text-align:center;"><a href="product-details.php?id=<?php echo base64_encode($val['id']); ?>"><?php echo $val['name']; ?></a></h2>
+                                        <span>P. <?php echo $val['code']; ?></span>
                                         <div class="product-price" style="text-align:center;">
                                             <span>₹ <?php echo $val['h_price']; ?>.00</span>
                                             <del>₹ <?php $price = $val['h_price'] * 10 /100; echo round($val['h_price'] + $price); ?>.00</del>
