@@ -296,7 +296,7 @@ if(isset($_POST['type'])) {
                                             
                                             if(count($proVarient) >= 1) {
                                                 foreach($proVarient as $k => $v) { ?>
-                                                    <div class="color-box" data-proimg="<?php echo $v['id']; ?>" style="background-color:<?php echo $v['color']; ?>;border:1px solid white;"></div>
+                                                    <div class="color-box" data-proimg="<?php echo $v['id']; ?>" style="background-color:<?php echo $v['color']; ?>;border:1px solid white;height:50px; width:50px;"></div>
                                             <?php
                                                 }
                                             }
