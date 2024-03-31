@@ -307,7 +307,7 @@ if(isset($_POST['type'])) {
                                 <li><a href="?catid=<?php echo $_GET['catid']?>&page=<?php echo ($current_page > 1) ? $current_page - 1 : 1; ?>"><i class="fas fa-angle-double-left"></i></a></li>
                                 <?php for($i = 1; $i <= $total_pages; $i++) { ?>
                                     <li <?php if($i == $current_page) echo 'class="active"'; ?>>
-                                        <a href="?page=<?php echo $i; ?>"><?php echo $i; ?></a>
+                                        <a href="?catid=<?php echo $_GET['catid']?>&page=<?php echo $i; ?>"><?php echo $i; ?></a>
                                     </li>
                                 <?php } ?>
                                 <li><a href="?catid=<?php echo $_GET['catid']?>&page=<?php echo ($current_page < $total_pages) ? $current_page + 1 : $total_pages; ?>"><i class="fas fa-angle-double-right"></i></a></li>
