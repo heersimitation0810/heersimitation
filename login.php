@@ -26,6 +26,7 @@ if(isset($_POST['submit'])) {
                 if(isset($_SESSION['page'])) {
                     $page = $_SESSION['page'];
                     header("Location:$page");
+                    unset($_SESSION['page']);
                 } else {
                     header("Location:index.php");
                 }

@@ -9,6 +9,11 @@ if(!isset($_GET['catid'])) {
 
 if(isset($_POST['type'])) {
     $user_id = isset($_SESSION['user_id']) ? $_SESSION['user_id'] : '';
+
+    if($_POST['type'] == 'wishlist') {
+        $_SESSION['page'] = 'shop.php?catid=' . $_POST['catId'] . '&page=' . $_POST['currentpage'];
+    }
+
     if($_POST['type'] == 'removeItem') {
         $proId = $_POST['proId'];
         $proCon = array("user_id" => $user_id, "pro_id" => $proId);
@@ -305,7 +310,11 @@ if(isset($_POST['type'])) {
                         <div class="ltn__pagination">
                             <ul>
                                 <li><a href="?catid=<?php echo $_GET['catid']?>&page=<?php echo ($current_page > 1) ? $current_page - 1 : 1; ?>"><i class="fas fa-angle-double-left"></i></a></li>
-                                <?php for($i = 1; $i <= $total_pages; $i++) { ?>
+                                <?php
+                                    $page = 0; 
+                                    for($i = 1; $i <= $total_pages; $i++) { 
+                                    $page = $i;
+                                ?>
                                     <li <?php if($i == $current_page) echo 'class="active"'; ?>>
                                         <a href="?catid=<?php echo $_GET['catid']?>&page=<?php echo $i; ?>"><?php echo $i; ?></a>
                                     </li>
@@ -419,6 +428,8 @@ if(isset($_POST['type'])) {
 <script>
     var user_id = "<?php echo isset($_SESSION['user_id']) ? $_SESSION['user_id'] : ''; ?>";
     var catid = "<?php echo isset($_GET['catid']) ? $_GET['catid'] : ''; ?>";
+    var page = "<?php echo $page; ?>";
+
     $('.view').click(function() {
         var proid = $(this).data("proid");
         $.ajax({
@@ -451,7 +462,18 @@ if(isset($_POST['type'])) {
 
     $(document).on('click', '.wishlist', function() {
         if(user_id == '') {
-            window.location.href = 'login.php';
+            $.ajax({
+                url: 'shop.php?catid=' + catid,
+                method: 'POST',
+                data: {
+                    type: "wishlist",
+                    catId: catid,
+                    currentpage: page
+                },
+                success: function(response){
+                    window.location.href = 'login.php';
+                }
+            });
         } else {
             var proid = $(this).data("proid");
             $.ajax({
