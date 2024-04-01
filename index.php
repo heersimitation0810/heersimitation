@@ -282,7 +282,7 @@ if(isset($_POST['type'])) {
                             </a>
                         </div>
                         <div class="ltn__category-item-name">
-                            <h5><a href="shop.php?catid=1">Bracelets</a></h5>
+                            <h5><a href="shop.php?catid=2">Bracelets</a></h5>
                         </div>
                     </div>
                 </div>
@@ -294,7 +294,7 @@ if(isset($_POST['type'])) {
                             </a>
                         </div>
                         <div class="ltn__category-item-name">
-                            <h5><a href="shop.php?catid=1">Rings</a></h5>
+                            <h5><a href="shop.php?catid=3">Rings</a></h5>
                         </div>
                     </div>
                 </div>
@@ -306,7 +306,7 @@ if(isset($_POST['type'])) {
                             </a>
                         </div>
                         <div class="ltn__category-item-name">
-                            <h5><a href="shop.php?catid=1">Necklace</a></h5>
+                            <h5><a href="shop.php?catid=4">Necklace</a></h5>
                         </div>
                     </div>
                 </div>
