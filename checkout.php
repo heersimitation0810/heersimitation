@@ -463,7 +463,7 @@ if(isset($_POST['type'])) {
             $('#shipping-error').css('display', 'none');
             var amt = "<?php echo $total; ?>";
             var options = {
-                    "key": "rzp_test_eh4xkcqTW9H6ka",
+                    "key": "rzp_live_JdISJLzaWahrpQ",
                     "amount": amt * 100,
                     "currency": "INR",
                     "name": "Heers Imitation Jewellery House",

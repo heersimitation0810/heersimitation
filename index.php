@@ -454,10 +454,12 @@ if(isset($_POST['type'])) {
                             <div class="ltn__product-tab-content-inner">
                                 <div class="row ltn__tab-product-slider-one-active slick-arrow-1">
                                     <?php 
-                                        $condition = array('cat_id' => '2');
-                                        $earrings = $imitation->get('product', '*', NULL, $condition);
+                                        $order = "id DESC";
+                                        $limit = "10";
+                                        $ringcondition = array('cat_id' => '2');
+                                        $ring = $imitation->get('product', '*', NULL, $ringcondition, $order, $limit);
 
-                                        foreach($earrings as $key => $val) { ?>
+                                        foreach($ring as $key => $val) { ?>
                                             <div class="col-lg-12">
                                                 <div class="ltn__product-item ltn__product-item-3 text-center">
                                                     <div class="product-img">
@@ -486,10 +488,12 @@ if(isset($_POST['type'])) {
                             <div class="ltn__product-tab-content-inner">
                                 <div class="row ltn__tab-product-slider-one-active slick-arrow-1">
                                     <?php 
-                                        $condition = array('cat_id' => '3');
-                                        $earrings = $imitation->get('product', '*', NULL, $condition);
+                                        $order = "id DESC";
+                                        $limit = "10";
+                                        $braccondition = array('cat_id' => '3');
+                                        $brac = $imitation->get('product', '*', NULL, $braccondition, $order, $limit);
 
-                                        foreach($earrings as $key => $val) { ?>
+                                        foreach($brac as $key => $val) { ?>
                                             <div class="col-lg-12">
                                                 <div class="ltn__product-item ltn__product-item-3 text-center">
                                                     <div class="product-img">
@@ -518,10 +522,12 @@ if(isset($_POST['type'])) {
                             <div class="ltn__product-tab-content-inner">
                                 <div class="row ltn__tab-product-slider-one-active slick-arrow-1">
                                 <?php 
-                                    $condition = array('cat_id' => '4');
-                                    $earrings = $imitation->get('product', '*', NULL, $condition);
+                                    $order = "id DESC";
+                                    $limit = "10";
+                                    $neccondition = array('cat_id' => '4');
+                                    $nec = $imitation->get('product', '*', NULL, $neccondition, $order, $limit);
 
-                                    foreach($earrings as $key => $val) { ?>
+                                    foreach($nec as $key => $val) { ?>
                                         <div class="col-lg-12">
                                                 <div class="ltn__product-item ltn__product-item-3 text-center">
                                                     <div class="product-img">
