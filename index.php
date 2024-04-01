@@ -410,8 +410,8 @@ if(isset($_POST['type'])) {
                     <div class="ltn__tab-menu ltn__tab-menu-2 ltn__tab-menu-top-right-- text-uppercase text-center">
                         <div class="nav">
                             <a class="active show" data-bs-toggle="tab" href="#liton_tab_3_1">Earrings</a>
-                            <a data-bs-toggle="tab" href="#liton_tab_3_2" class="">Rings</a>
-                            <a data-bs-toggle="tab" href="#liton_tab_3_3" class="">Bracelets</a>
+                            <a data-bs-toggle="tab" href="#liton_tab_3_2" class="">Bracelets</a>
+                            <a data-bs-toggle="tab" href="#liton_tab_3_3" class="">Rings</a>
                             <a data-bs-toggle="tab" href="#liton_tab_3_4" class="">Necklace</a>
                         </div>
                     </div>
