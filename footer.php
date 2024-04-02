@@ -80,7 +80,7 @@
                     <div class="col-md-6 col-12 align-self-center">
                         <div class="ltn__copyright-menu text-right text-end">
                             <ul>
-                                <li>Designed & Developed By <span class="break-line" style="color:#bf8d0a !important">PixelCrest Technologies</span></li>
+                                <li>Designed & Developed By <span class="break-line" style="color:#bf8d0a !important">Skyline Technologies</span></li>
                             </ul>
                         </div>
                     </div>
