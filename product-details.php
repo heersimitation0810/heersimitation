@@ -309,7 +309,7 @@ if(isset($_POST['type'])) {
                                         <div class="single-large-img">
                                             <div class="img-display" style="display: flex; justify-content: center; align-items: center;">
                                                 <span class="zoom">
-                                                    <img src="img/product/<?php echo $product[0]['primary_img']; ?>" alt="Image" id="productImg" style="max-height: 80%; max-width: 80%;">
+                                                    <img src="img/product/<?php echo $product[0]['primary_img']; ?>" alt="Image" id="productImg" style="max-height: 80%; max-width: 100%;">
                                                 </span>
                                             </div>
                                         </div>
