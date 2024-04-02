@@ -223,7 +223,38 @@ if(isset($_POST['type'])) {
 <head>
     <?php include_once('links.php'); ?>
 </head>
+<style>
+    img {
+  display: block;
+  height: auto;
+  max-width: 100%;
+}
 
+.product-page {
+  display: flex;
+}
+
+.img-display {
+  flex-grow: 1;
+  max-width: 372px;
+}
+
+.thumb {
+  opacity: .7;
+  margin: 0 .25rem .25rem 0;
+  width: 120px;
+  transition: opacity .25s ease-out;
+}
+
+.thumb:hover,
+.thumb.active {
+  opacity: 1;
+}
+
+.zoom {
+  display: inline-block;
+}
+</style>
 <body>
     <!--[if lte IE 9]>
         <p class="browserupgrade">You are using an <strong>outdated</strong> browser. Please <a href="https://browsehappy.com/">upgrade your browser</a> to improve your experience and security.</p>
@@ -276,8 +307,10 @@ if(isset($_POST['type'])) {
                                 <div class="ltn__shop-details-img-gallery">
                                     <div class="ltn__shop-details-large-img">
                                         <div class="single-large-img">
-                                            <div style="display: flex; justify-content: center; align-items: center;">
-                                                <img src="img/product/<?php echo $product[0]['primary_img']; ?>" alt="Image" id="productImg" style="max-height: 80%; max-width: 80%;">
+                                            <div class="img-display" style="display: flex; justify-content: center; align-items: center;">
+                                                <span class="zoom">
+                                                    <img src="img/product/<?php echo $product[0]['primary_img']; ?>" alt="Image" id="productImg" style="max-height: 80%; max-width: 80%;">
+                                                </span>
                                             </div>
                                         </div>
                                     </div>
@@ -481,7 +514,7 @@ if(isset($_POST['type'])) {
     <script src="js/plugins.js"></script>
     <!-- Main JS -->
     <script src="js/main.js"></script>
-  
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/jquery-zoom/1.7.21/jquery.zoom.min.js"></script>
 </body>
 <script>
     var user_id = "<?php echo isset($_SESSION['user_id']) ? $_SESSION['user_id'] : ''; ?>";
@@ -665,6 +698,22 @@ if(isset($_POST['type'])) {
                     $('.totalPro').text('');
                 }
                 $('#showCart').click();
+            }
+        });
+    });
+
+    $(function() {
+        $('.zoom').zoom();
+        $('.thumb').on('click', 'a', function(e) {
+            e.preventDefault();
+            var thumb = $(e.delegateTarget);
+            if (!thumb.hasClass('active')) {
+            thumb.addClass('active').siblings().removeClass('active');
+            $('.zoom')
+                .zoom({
+                url: this.href
+                })
+                .find('img').attr('src', this.href);
             }
         });
     });
