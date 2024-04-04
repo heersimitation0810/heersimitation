@@ -546,6 +546,10 @@ if(isset($_POST['type'])) {
             },
             success: function(response){
                 $('#productImg').attr('src', 'img/product/' + response);
+                var src = $('#productImg').attr('src');
+                $('.zoom').zoom({
+                    url: src
+                }).find('img').attr('src', src);
             }
         });
     });

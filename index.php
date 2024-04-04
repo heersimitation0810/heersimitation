@@ -3,6 +3,22 @@ session_start();
 include_once("config.php");
 $imitation = new imitation();
 
+$ip_address = $_SERVER['REMOTE_ADDR'];
+$browser = $_SERVER['HTTP_USER_AGENT'];
+$os = php_uname('s');
+
+$con = array('ip_address' => $ip_address);
+$checkIP = $imitation->get('visitors', '*', NULL, $con);
+
+if(count($checkIP) == 0) {
+    $varray = array(
+        "ip_address"       => $ip_address, 
+        "browser"          => $browser,
+        "operating_system" => $os,
+    ); 
+    $vresult = $imitation->insert("visitors", $varray);
+}
+
 if(isset($_POST['type'])) {
     $user_id = isset($_SESSION['user_id']) ? $_SESSION['user_id'] : '';
     if($_POST['type'] == 'removeItem') {
